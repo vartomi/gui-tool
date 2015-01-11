@@ -2,5 +2,5 @@
 
 GUI-TOOL
 ========
-Create ExtJS prototype applications easy and fast.
+Create ExtJS prototype applications easier and faster.
 
