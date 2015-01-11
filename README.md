@@ -1,4 +1,6 @@
 ![Logo](https://raw.githubusercontent.com/vartomi/gui-tool/master/gui_tool_logo.png)
 
-GUI-TOOL for ExtJS
+GUI-TOOL
 ========
+Create ExtJS prototype applications easy and fast.
+
