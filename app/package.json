@@ -1,0 +1,36 @@
+{
+  "name": "gui-tool",
+  "description": "A tool to generate an ExtJS prototype with Siesta tests.",
+  "version": "1.0.2",
+  "tags": [],
+  "author": "Tamás Várhegyi <varhegyi.tomi@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bin": {
+    "gui-tool": "./bin/gui-tool.js"
+  },
+  "main": "index",
+  "dependencies": {
+    "colors": "1.0.3",
+    "commander": "2.6.0",
+    "express": "3.3.6",
+    "fs": "0.0.2",
+    "jayschema": "0.3.1",
+    "js-beautify": "1.5.1",
+    "js-yaml": "3.2.5",
+    "mu2": "0.5.20",
+    "open": "0.0.5",
+    "path": "0.11.14",
+    "should": "4.5.0",
+    "wrench": "1.5.8"
+  },
+  "homepage": "",
+  "_from": "gui-tool@",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,199 @@
+id: "guiSchema"
+$schema: "http://json-schema.org/draft-04/schema#"
+title: guiSpec
+description: Specification of GUI
+$ref: "#/definitions/specification"
+
+definitions:
+
+    specification:        
+        type: object
+        required:
+            - extTheme
+            - layout
+            - views
+        properties:
+            extTheme:
+                type: string
+                enum: [gray, neptune, classic]
+            layout:
+                type: array
+                items:
+                    type: string
+            views:
+                $ref: "#/definitions/views"   
+            models:
+                $ref: "#/definitions/models"
+            useCases:
+                $ref: "#/definitions/useCases"
+           
+    views:
+        type: array
+        items:
+            type: object
+            required: 
+                - name
+                - alias
+                - design
+            properties:
+                name:
+                    type: string
+                alias:
+                    type: string
+                design:
+                    $ref: "#/definitions/design"
+                content:
+                    $ref: "#/definitions/viewContent"
+                dataContent:
+                    $ref: "#/definitions/dataContent"
+                buttons:
+                    type: array
+                    items:
+                        type: string
+                     
+    design:
+        type: object
+        required: 
+            - type
+        properties:
+            title:
+                type: string
+            type:
+                type: string
+                enum: [window, grid, form, panel, text, password, auto]
+            height:
+                type: integer
+            width:
+                type: integer
+                
+                
+    viewContent:
+        type: array
+        items:
+            type: object
+            required:
+                - name
+                - design
+            properties:
+                name:
+                    type: string
+                alias:
+                    type: string
+                design:
+                    $ref: "#/definitions/design"
+                content:
+                    $ref: "#/definitions/viewContent"
+                buttons:
+                    type: array
+                    items:
+                        type: string
+    
+    dataContent:
+        type: object
+        required:
+            - model
+        properties:
+            model:
+                type: string
+            edit:
+                type: boolean
+            bigData:
+                type: string
+            filter:
+                type: array
+                items:
+                    type: object
+                    required: [type, field]
+                    properties:
+                        alias:
+                            type: string
+                        type:
+                            type: string
+                            enum: [check, text]
+                        field:
+                            type: string
+                        items:
+                            type: array
+                            items:
+                                type: string
+                
+    models:
+        type: array
+        items:
+            type: object
+            required:
+                - name
+                - proxy
+                - fields
+            properties:
+                name:
+                    type: string
+                proxy:
+                    type: string
+                fields:
+                    type: array
+                    items:
+                        type: string
+                typedFields:
+                    type: array
+                    items:
+                        $ref: "#/definitions/typedField"
+                has:
+                    type: array
+                    items:
+                        type: object
+                        required:
+                            - name
+                            - key
+                            - inResource
+                        properties:
+                            name:
+                                type: string
+                            key:
+                                type: string
+                            inResource:
+                                type: boolean
+                                               
+    typedField:
+        type: object
+        required:
+            - name
+            - type
+        properties:
+            name:
+                type: string
+            type:
+                type: string
+                enum: [string, int, float, boolean, date]
+            format:
+                type: string
+                enum: [c, "Y-m-d", "F j, Y, g:i a"]
+                
+    useCases: 
+        type: array
+        items:
+            type: object
+            required:
+                - type
+                - on
+                - do
+            properties:
+                type:
+                    type: string
+                on:
+                    type: string
+                do:
+                    type: array
+                    items:
+                        $ref: "#/definitions/command"
+    
+    command:
+        type: object
+        required:
+            - cmd
+        properties:
+            cmd:
+                type: string
+            msg:
+                type: string
+           

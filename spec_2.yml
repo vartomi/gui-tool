@@ -1,0 +1,188 @@
+description: |
+    Rapid Gui Application specification
+
+extTheme: gray
+
+layout:
+    - "personlist|personform"
+    - "eventlist|eventform|container"
+
+views:
+    -
+        name: EventWindow
+        alias: eventwindow
+        design:
+            title: Events
+            type: window
+            height: 300
+            width: 600
+        content:
+            -
+                name: EventsGrid
+                alias: eventsgrid
+                design:
+                    type: grid
+                dataContent:
+                    model: Event
+    -
+        name: EventGrid
+        alias: eventlist
+        design:
+            title: Events
+            type: grid
+        dataContent:
+            model: Event
+            edit: true
+            filter:
+                -
+                    type: check
+                    field: type
+                    items: [leg, fpr, sby, off, vac, sim, plusT]
+                -
+                    type: check
+                    field: startLocation
+                    items: [BUD, TXL]
+                -
+                    type: check
+                    field: endLocation
+                    items: [AMS, BUD]
+        buttons: [clearFilter, reload, openInWindow]
+    -
+        name: PersonGrid
+        alias: personlist
+        design:
+            title: Persons
+            type: grid
+        dataContent:
+            model: Person
+            edit: true
+            bigData: about
+            filter:
+                -
+                    alias: searchperson
+                    type: text
+                    field: all
+                -
+                    type: check
+                    field: gender
+                    items: [male, female]
+        buttons: ["clearFilter"]
+    -
+        name: EventForm
+        alias: eventform
+        design:
+            title: Add event
+            type: form
+        dataContent:
+            model: Event
+        content:
+            -
+                name: Fields
+                design:
+                    type: auto
+    -
+        name: PersonForm
+        alias: personform
+        design:
+            title: Modify person data
+            type: form
+        dataContent:
+            model: Person
+        content:
+            -
+                name: Fields
+                design:
+                    type: auto
+
+models:
+    -
+        name: Event
+        proxy: http://localhost:3007/rest/events
+        fields: [id, type, startLocation, endLocation, duration]
+        typedFields:
+            -
+                name: beginDt
+                type: date
+                format: c
+            -
+                name: endDt
+                type: date
+                format: c
+        has:
+            -
+                name: Person
+                key: personId
+                inResource: false
+    -
+        name: Person
+        proxy: http://localhost:3007/rest/persons
+        fields: [id, contractCode, firstName, surName, gender, email, address, about]
+        typedFields:
+            -
+                name: age
+                type: int
+            -
+                name: employmentBeginDt
+                type: date
+                format: c
+            -
+                name: registered
+                type: date
+                format: c
+useCases:
+    -
+        type: select
+        on: personlist
+        do:
+            -
+                cmd: filter.eventlist
+            -
+                cmd: load.personform
+    -
+        type: click
+        on: eventlist.#openInWindowBtn
+        do:
+            -
+                cmd: show.eventwindow
+    -
+        type: click
+        on: eventlist.#clearFilterBtn
+        do:
+            -
+                cmd: clear.eventlist
+    -
+        type: click
+        on: personlist.#clearFilterBtn
+        do:
+            -
+                cmd: clear.personlist
+    -
+        type: select
+        on: eventlist
+        do:
+            -
+                cmd: load.eventform
+    -
+        type: click
+        on: eventlist.checkbox
+        do:
+            -
+                cmd: filter.eventlist
+    -
+        type: click
+        on: personlist.checkbox
+        do:
+            -
+                cmd: filter.personlist
+    -
+        type: click
+        on: eventlist.#reloadBtn
+        do:
+            -
+                cmd: load.eventlist
+    -
+        type: type
+        on: personlist.#searchpersonTextfield
+        do:
+            -
+                cmd: filter.personlist

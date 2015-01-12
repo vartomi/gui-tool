@@ -1,0 +1,24 @@
+## The server config file
+
+# Use this environment by default, if server is started without the --env switch.
+useEnvironment: development
+#useEnvironment: production
+
+environments:
+
+  # This is the default configuration set
+  default:
+    documentRoot: .
+    port: 4007
+    restapiRoot: ..
+    useRemoteServices: false
+
+  # Override the default config parameters with values specific to the development environment
+  development:
+    port: 4007
+    #documentRoot: ../../webui
+
+  # production environment specific values
+  production:
+    port: 4008
+    #documentRoot: ../../webui/build/production/RapidGui

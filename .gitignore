@@ -1,0 +1,5 @@
+nbproject
+/webui/build
+/webui/app
+/webui/.sencha/app/sencha.cfg
+/test/gui
