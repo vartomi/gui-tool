@@ -6,7 +6,7 @@
 ----------
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with simply usable speicification.
 ###**Getting Started**
-Before you start it, please check the [requirements](Requirements)
+Before you start it, please check the [requirements](#requirements)!
 
  1.   Install gui-tool to your computer.
 > `npm install gui-tool -g`
@@ -17,16 +17,20 @@ Before you start it, please check the [requirements](Requirements)
  
  3. If everything is created successfully, you need to see the following hierarchy
  > `<project_name>`
- >  |--- `webui`
+ 
+ > |--- `webui`
+ 
  >  |--- `specification`
+ 
  >  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--- `gui.yml`
-> |--- `test`
+
+ > |--- `test`
 
 
 
+<a name="requirements"></a>
 ###**Requirements**
 
  - unix based commandline tool, e.g. on Windows a [Git Bash](http://git-scm.com/downloads)
  - [node.js with npm](http://nodejs.org/download/) (**> v0.10.28**)
  - [Sencha Cmd](http://www.sencha.com/products/sencha-cmd/download) (**> v5.1.0.26**)
-
