@@ -14,7 +14,7 @@
     // Setup the project generator command
     program
         .version(thisPackage.version)
-        .command('init [dir]')
+        .command('init [name]')
         .description('Init project structure')
         .option('-r, --reset', 'Reset the project structure')
         .action(function(dir, options) {

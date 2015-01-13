@@ -133,7 +133,7 @@ views:
 models:
     -
         name: Event
-        proxy: http://localhost:3007/rest/events
+        # proxy: http://localhost:3007/rest/events
         fields: [id, type, startLocation, endLocation, duration]
         typedFields:
             -
@@ -151,7 +151,7 @@ models:
                 inResource: false
     -
         name: Person
-        proxy: http://localhost:3007/rest/persons
+        # proxy: http://localhost:3007/rest/persons
         fields: [id, contractCode, firstName, surName, gender, email, address, about]
         typedFields:
             -

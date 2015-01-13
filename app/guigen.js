@@ -1,6 +1,5 @@
 var childProcess  = require('child_process'),
     wget = require('wget'),
-    unzip = require('unzip'),
     exec = require('child_process').exec,
     open = require('open'),
     generator = require('./lib/generator'),
@@ -28,30 +27,14 @@ var execute = function(command, directory, finishMsg, colorizeObject, logging, c
             if (error !== null) {
                 console.log('exec error: '.red.bold + error);
             } else {
-                if (finishMsg) console.log(finishMsg.bold);
-                if (callback) callback();
+                if (finishMsg) console.log(finishMsg.bold);                
             }
+            if (callback) callback();
         });
         if (logging) {
             child.stdout.on('data', function(buf) {
-                var s = String(buf),
-                    prefix;
-                if (colorizeObject){
-                    if (s.indexOf(colorizeObject[0].text) === 0) {
-                        prefix = s.substring(0, 5);
-                        s = s.substring(5);
-                        console.log(prefix.bold.green + s);
-                    }
-                    else if (s.indexOf(colorizeObject[1].text) === 0) {
-                        prefix = s.substring(0, 5);
-                        s = s.substring(5);
-                        console.log(prefix.bold.red + s);
-                    }
-                    else
-                        console.log(s.grey);
-                } else {
-                    console.log(s.grey);
-                }
+                var s = String(buf);                    
+                console.log(s.grey);
             });
         }
 
@@ -86,48 +69,60 @@ var consoleTest = function () {
 
 }
 
-exports.init = function(dir, options) {
+exports.init = function(name, options) {
     var reset = options.reset,
-        dirName = dir,
-        src = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',
-        output = dirName + '/ext.zip';
+        dirName = name,
+        src = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',        
+        remove = (reset ? true : false),
+        directories = ['test', 'specification', 'webui'],
+        success = true,
+        zipPath;
     
-    if (!dirName) {
-        console.log('Directory name is required "gui-tool init [dir]"');
-        return false;
+    if (!dirName) {        
+        directories.forEach(function (dir) {
+            success = success && generator.createDirectoryTree(dir, [], remove);
+        }); 
+        dirName = '';        
+    } else {
+        success = generator.createDirectoryTree(dirName, directories, remove);        
+        dirName += '/';
     }
         
-    if (generator.createDirectoryTree(dirName, [
-        'test',
-        'specification',
-        'webui'
-    ], (reset ? true : false))) {        
-        generator.copyFile('gui.yml', mainDir + '/generator', dirName + '/specification');
-        console.log('generating ExtJS application skeleton...'); 
+    if (success) {  
+        zipPath = dirName + 'ext.zip';
         
-        var download = wget.download(src, output);
+        console.log('directories created...');
+        generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');        
+        
+        var download = wget.download(src, zipPath),
+            oneFourth = false,
+            twoFourth = false,
+            threeFourth = false;
         console.log('downloading ExtJS 4.2.1 gpl framework');
         download.on('error', function(err) {
             console.log(err);
         });
         download.on('progress', function(progress) {
             var pr = parseFloat(progress) * 100;
-            if (pr > 25.0 && pr < 25.05) {
-                process.stdout.write('.'); 
-            } else if (pr > 50.0 && pr < 50.05) {
-                process.stdout.write('.'); 
-            } else if (pr > 75.0 && pr < 75.05) {
-                process.stdout.write('.'); 
+            
+            if (pr > 25 && !oneFourth) {
+                process.stdout.write('...'); 
+                oneFourth = true;
+            } else if (pr > 50 && !twoFourth) {
+                twoFourth = true;
+                process.stdout.write('...'); 
+            } else if (pr > 75 && !threeFourth) {
+                threeFourth = true;
+                process.stdout.write('...');
             }
         });
         download.on('end', function() {
             console.log('Done');
-            var unzipStream = unzip.Extract({ path: dirName + '/webui' });
-            fs.createReadStream(output).pipe(unzipStream);
-            unzipStream.on('close', function () { 
-                execute('mv * ./ext4', dirName + '/webui', null, null, null, function () {                              execute('sencha -sdk ./ext4 generate app RapidGui .', null, 'gui-tool project structure initialized');   
+            execute('unzip -q ' + zipPath + ' -d ' + dirName + 'webui', null, null, null, null, function () { 
+                execute('mv * ./ext4', dirName + 'webui', null, null, null, function () {
+                    execute('sencha -sdk ./ext4 generate app RapidGui .', null, 'gui-tool project initialized');   
                 });
-            });            
+            });        
         });
     }
 };
@@ -187,7 +182,7 @@ exports.generate = function(options) {
     if (compile) {
         console.log('Sencha building...\n'.bold);
         execute('sencha app build', 'webui',
-                'Sencha build finished\n', [{text: '[INF]'}, {text: '[ERR]'}]);
+                'Sencha build finished\n', [{text: '[INF]'}, {text: '[ERR]'}], true);
     }
 }
 
@@ -225,7 +220,7 @@ exports.startServer = function(options) {
         openApp = options.open,
         test = options.test,
         devPath = path.resolve('./webui', ''),
-        //prodPath = path.resolve('./webui/build/production/', ''),
+        prodPath = path.resolve('./webui/build/production/RapidGui', ''),
         i;
 
     if (!mock && !webdev && !webprod) {
@@ -244,11 +239,11 @@ exports.startServer = function(options) {
     }
 
     if (webprod) {
-        //execute('node server.js production without-log', mainDir + '/server');
+        execute('node server.js production ' + prodPath + ' without-log', mainDir + '/server');
         console.log('Production host server starting...\n'.bold);
         if (openApp) {
             console.log('Open builded app in browser...'.cyan);
-            //open(prodUrl);
+            open(prodUrl);
         }
     }
 }
