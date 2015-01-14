@@ -39,7 +39,7 @@ Gui-tool use an own specifcation schema to describe how the application should l
 
 <a name="development"></a>
 ###**Development**
-If you need to improve or develop specific functionalitites, UI elements for the application, you can extend the auto-generated ExtJS code. It's already a well-formatted and readable source under `webui/app` directory.
+If you need to improve or develop specific functionalitites, UI elements for the generated ExtJS application, you can extend the auto-generated code. It's already a well-formatted and readable source under `webui/app` directory.
 
 See [more](http://docs.sencha.com/extjs/4.2.1/) in ExtJS API document
 
