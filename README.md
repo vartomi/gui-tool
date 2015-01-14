@@ -8,6 +8,8 @@ Do you need a skeleton application or a prototype written in ExtJS? Just create 
 
 [Getting Started](#getting-started)<br/>
 [How to specify?](#specification)<br/>
+[Development](#development)<br/>
+[Testing](#testing)<br/>
 [Requirements](#requirements)
 
 ###**Getting Started**
@@ -34,6 +36,18 @@ Before you start it, please check the [requirements](#requirements)!
 <a name="specification"></a>
 ###**How to specify?**
 Gui-tool use an own specifcation schema to describe how the application should look like and what kind of models it has. In `specification` directory the `gui.yml` file is an example specification file. It's used by the application without given other specification file.
+
+<a name="development"></a>
+###**Development**
+If you need to improve or develop specific functionalitites, UI elements for the application, you can extend the auto-generated ExtJS code. It's already a well-formatted and readable source under `webui/app` directory.
+
+See [more](http://docs.sencha.com/extjs/4.2.1/) in ExtJS API document
+
+<a name="testing"></a>
+###**Testing**
+Front-end applicaions can not exist without tests. They ensure that the application is working well in most cases. Gui-tool use Bryntum Siesta testing framework, because it's designed and based on ExtJS. With help of it the testing of ExtJS UI elements is very easy.
+
+See [more](http://www.bryntum.com/docs/siesta/#!/api) in Siesta API document
 
 <a name="requirements"></a>
 ###**Requirements**
