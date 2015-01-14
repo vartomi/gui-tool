@@ -15,10 +15,10 @@ exports.createDirectoryTree = function(rootDirName, projectTree, removeIfExist) 
 
     if (fs.existsSync(rootDirPath)) {        
         if( ! removeIfExist ) {
-            console.log( '[ERR] Directory exists! ' + rootDirPath);
+            console.log( 'Directory exists! ' + rootDirPath);
             return false;
         }
-        console.log('[INF] Remove existing directory... (' + rootDirPath + ')');
+        console.log('Remove existing directory... (' + rootDirPath + ')');
         wrench.rmdirSyncRecursive(rootDirPath);
     }
 

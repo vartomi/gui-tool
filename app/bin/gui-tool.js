@@ -26,7 +26,7 @@
         .command('create')
         .description('Generate GUI files')
         .option("-s, --spec <file>", "Set specification file's path")
-        .option("-c, --compile", "Run sencha build", true)
+        .option("-c, --compile", "Run sencha build after creation", true)
         .option("-f, --force", "Remove existing files firstly", true)
         .action(function(options) {
             require('../guigen.js').generate(options);

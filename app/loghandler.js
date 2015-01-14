@@ -25,4 +25,12 @@ exports.finishLog = function (info) {
     console.log('%s!\n'.bold.green, info);
 }
 
+exports.err = function (err) {
+    console.error('[ERR] %s'.bold.red, err);
+}
+
+exports.log = function (log) {
+    console.log('[INF] ' + log);
+}
+
 

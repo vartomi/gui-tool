@@ -1,7 +1,14 @@
 {
   "name": "gui-tool",
   "description": "A tool to generate an ExtJS prototype with Siesta tests.",
-  "version": "1.0.2",
+  "keywords": [
+    "rapid",
+    "gui",
+    "prototype",
+    "skeleton",
+    "extjs"
+  ],
+  "version": "0.0.3",
   "tags": [],
   "author": "Tamás Várhegyi <varhegyi.tomi@gmail.com>",
   "repository": {
@@ -15,6 +22,7 @@
   "dependencies": {
     "colors": "1.0.3",
     "commander": "2.6.0",
+    "decompress": "^2.1.1",
     "express": "3.3.6",
     "fs": "0.0.2",
     "jayschema": "0.3.1",

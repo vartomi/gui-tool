@@ -1,13 +1,17 @@
+/*jshint node: true */
+'use strict';
+require('colors');
+
 var childProcess  = require('child_process'),
-    wget = require('wget'),
+    http = require('http'),
     exec = require('child_process').exec,
     open = require('open'),
+    Decompress = require('decompress'),
     generator = require('./lib/generator'),
     fs = require('fs'),
     beautify = require('js-beautify').js_beautify,
     guiGenerator = require('./generator/index.js'),
     testGenerator = require('./generator/test.js'),
-    colors = require('colors'),
     logHandler = require('./loghandler.js'),
     path = require('path'),
     mainDir = path.resolve(__dirname, ''),
@@ -17,19 +21,23 @@ var childProcess  = require('child_process'),
     childs = [];
 
 var execute = function(command, directory, finishMsg, colorizeObject, logging, callback) {
-    var child;
+    var options = {
+            cwd: path.resolve(process.cwd(), '')
+        },
+        child;
+    
     try {
         if (directory) {
-            process.chdir(directory);
+            options.cwd += '/' + directory;
         }
 
-        child = exec(command, function(error, stdout, stderr) {
+        child = exec(command, { cwd: directory }, function(error, stdout, stderr) {
             if (error !== null) {
-                console.log('exec error: '.red.bold + error);
+                logHandler.err(error);
             } else {
-                if (finishMsg) console.log(finishMsg.bold);                
-            }
-            if (callback) callback();
+                if (finishMsg) logHandler.finishLog(finishMsg);
+                if (callback) callback();
+            }            
         });
         if (logging) {
             child.stdout.on('data', function(buf) {
@@ -39,15 +47,14 @@ var execute = function(command, directory, finishMsg, colorizeObject, logging, c
         }
 
         child.stderr.on('data', function (buf) {
-            console.log(String(buf).yellow);
+            console.log(String(buf).red);
         });
 
         childs.push({process: child, cmd: directory + '/' + command});
+    } catch (err) {
+        logHandler.err('child process failed: ' + err);
     }
-    catch (err) {
-        console.log('chdir err: ' + err);
-    }
-}
+};
 
 var consoleTest = function () {
     var reportFile = path.resolve('test/gui/report.json');
@@ -72,11 +79,12 @@ var consoleTest = function () {
 exports.init = function(name, options) {
     var reset = options.reset,
         dirName = name,
-        src = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',        
+        extSrc = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',
+        siestaSrc = 'http://www.bryntum.com/download/?product_id=siesta-lite',
         remove = (reset ? true : false),
         directories = ['test', 'specification', 'webui'],
         success = true,
-        zipPath;
+        extZipPath, siestaZipPath;
     
     if (!dirName) {        
         directories.forEach(function (dir) {
@@ -89,42 +97,76 @@ exports.init = function(name, options) {
     }
         
     if (success) {  
-        zipPath = dirName + 'ext.zip';
+        extZipPath = dirName + 'ext.zip';
+        siestaZipPath = dirName + 'siesta.zip';
         
-        console.log('directories created...');
+        logHandler.finishLog('Directories created');
         generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');        
         
-        var download = wget.download(src, zipPath),
-            oneFourth = false,
-            twoFourth = false,
-            threeFourth = false;
-        console.log('downloading ExtJS 4.2.1 gpl framework');
-        download.on('error', function(err) {
-            console.log(err);
-        });
-        download.on('progress', function(progress) {
-            var pr = parseFloat(progress) * 100;
+        try {
+            // ExtJS
+            downloadFramework(extSrc, extZipPath, function () {
+                decompressFramework(extZipPath, dirName + 'webui', function () {
+                    execute('mv * ./ext4', dirName + 'webui', null, null, null, function () {
+                        execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized');  
+                    });                    
+                });  
+            });  
             
-            if (pr > 25 && !oneFourth) {
-                process.stdout.write('...'); 
-                oneFourth = true;
-            } else if (pr > 50 && !twoFourth) {
-                twoFourth = true;
-                process.stdout.write('...'); 
-            } else if (pr > 75 && !threeFourth) {
-                threeFourth = true;
-                process.stdout.write('...');
-            }
-        });
-        download.on('end', function() {
-            console.log('Done');
-            execute('unzip -q ' + zipPath + ' -d ' + dirName + 'webui', null, null, null, null, function () { 
-                execute('mv * ./ext4', dirName + 'webui', null, null, null, function () {
-                    execute('sencha -sdk ./ext4 generate app RapidGui .', null, 'gui-tool project initialized');   
-                });
-            });        
-        });
+            // Siesta
+            downloadFramework(siestaSrc, siestaZipPath, function () {
+                decompressFramework(siestaZipPath, dirName + 'test', function () {
+                    execute('mv * ./siesta', dirName + 'test');
+                });  
+            });  
+        } catch(err) {
+            logHandler.err(err);   
+        }
+    } else {
+        logHandler.err('Directory contains already initialized gui-tool project!');   
     }
+};
+
+var downloadFramework = function (src, out, callback) {
+    var counter = 0,
+        limit = 1000;
+    logHandler.log('downloading framework from ' + src);
+    http.get(src, function (res) {
+        var data = '';
+        res.setEncoding('binary');    
+        res.on('data', function (chunk) {
+            counter += 1;
+            if (counter > limit) {
+                logHandler.log('...');
+                counter = 0;
+            }
+            data += chunk;
+        });
+
+        res.on('end', function () {
+            fs.writeFile(out, data, 'binary', function (err) {
+                if (err) throw err;
+                logHandler.log('downloading from ' + src + ' is done');
+                if (callback) callback();
+            });
+        });
+    });
+};
+    
+var decompressFramework = function (src, out, callback) {
+    var decompress = new Decompress()
+        .src(src)
+        .dest(out)
+        .use(Decompress.zip());
+
+    decompress.run(function (err) {
+        if (err) throw err;
+        fs.unlink(src, function (err) {
+            if (err) throw err;
+        });
+        logHandler.finishLog('Arcive (' + src + ') extracted');
+        if (callback) callback();
+    });      
 };
 
 exports.generate = function(options) {
@@ -251,9 +293,8 @@ exports.startServer = function(options) {
 var exitHandler = function () {
     var i;
     if (childs.length > 0) {
-        console.log('Child processes should be closed...'.bold);
+        logHandler.log('Child processes will be closed');
         for(i = 0; i < childs.length; i++){
-            console.log('\'%s\' process will be closed.'.grey, childs[i].cmd);
             childs[i].process.kill();
         }
     }
