@@ -4,7 +4,12 @@
 ####Create ExtJS prototype applications easier and faster.
 
 ----------
-Do you need a skeleton application or a prototype written in ExtJS? Just create it with simply usable speicification.
+Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
+
+[Getting Started](#getting-started)<br/>
+[How to specify?](#specification)<br/>
+[Requirements](#requirements)
+
 ###**Getting Started**
 Before you start it, please check the [requirements](#requirements)!
 
@@ -16,17 +21,19 @@ Before you start it, please check the [requirements](#requirements)!
  > `gui-tool init [name]`
  
  3. If everything is created successfully, you need to see the following hierarchy
- > `<project_name>`
- 
- > |--- `webui`
- 
- >  |--- `specification`
- 
- >  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--- `gui.yml`
+    ```
+     <project_name>
+     |- specification
+        |- gui.yml
+     |- test
+     |- webui
+        |- app
+        |- ...
+    ```
 
- > |--- `test`
-
-
+<a name="specification"></a>
+###**How to specify?**
+Gui-tool use an own specifcation schema to describe how the application should look like and what kind of models it has. In `specification` directory the `gui.yml` file is an example specification file. It's used by the application without given other specification file.
 
 <a name="requirements"></a>
 ###**Requirements**
