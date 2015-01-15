@@ -30,6 +30,9 @@ Before you start it, please check the [requirements](#requirements)!
      |- specification
         |- gui.yml
      |- test
+        |- gui
+        |- siesta
+        |- index.html
      |- webui
         |- app
         |- ...
