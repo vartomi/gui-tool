@@ -1,8 +1,9 @@
 
-<a href="#"><img src="https://raw.githubusercontent.com/vartomi/gui-tool/master/gui_tool_logo.png" height="40"></a> **GUI-TOOL**
+<a href="#"><img src="https://raw.githubusercontent.com/vartomi/gui-tool/master/gui_tool_logo.png" height="40"></a>**GUI-TOOL**
+----------------------
 
 ####Create ExtJS prototype applications easier and faster.
--
+
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
 
 [Getting Started](#getting-started)<br/>
