@@ -100,7 +100,7 @@ exports.init = function(name, options) {
         extZipPath = dirName + 'ext.zip';
         siestaZipPath = dirName + 'siesta.zip';
         
-        logHandler.finishLog('Directories created');
+        logHandler.finishLog('directories created');
         generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');        
         
         try {
@@ -123,14 +123,14 @@ exports.init = function(name, options) {
             logHandler.err(err);   
         }
     } else {
-        logHandler.err('Directory contains already initialized gui-tool project!');   
+        logHandler.err('directory contains already initialized gui-tool project!');   
     }
 };
 
 var downloadFramework = function (src, out, callback) {
     var counter = 0,
         limit = 1000;
-    logHandler.log('downloading framework from ' + src);
+    logHandler.log('downloading framework from ' + src + ' ...');
     http.get(src, function (res) {
         var data = '';
         res.setEncoding('binary');    
@@ -158,13 +158,15 @@ var decompressFramework = function (src, out, callback) {
         .src(src)
         .dest(out)
         .use(Decompress.zip());
+    
+    logHandler.log('extracting archive (' + src + ') ...');
 
     decompress.run(function (err) {
         if (err) throw err;
         fs.unlink(src, function (err) {
             if (err) throw err;
         });
-        logHandler.finishLog('Arcive (' + src + ') extracted');
+        logHandler.finishLog('archive (' + src + ') extracted');
         if (callback) callback();
     });      
 };
@@ -178,7 +180,7 @@ exports.generate = function(options) {
         specPath = options.spec,
         viewportSetup;
 
-    console.log('Generate basic ExtJS files...\n'.bold);
+    logHandler.log('generating basic ExtJS files...');
 
     if (specPath) {
         specPath = path.resolve('.', options.spec)

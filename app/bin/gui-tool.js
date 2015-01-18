@@ -15,48 +15,40 @@
     program
         .version(thisPackage.version)
         .command('init [name]')
-        .description('Init project structure')
-        .option('-r, --reset', 'Reset the project structure')
+        .description('Init a gui-tool project structure')
+        .option('-r, --reset', 're-generate structure')
+        .option('-e, --extjs <extjs_path>', 'init with given extjs framework')
+        .option('-s, --siesta <siesta_path>', 'init with given siesta framework')
         .action(function(dir, options) {
             require('../guigen.js').init(dir, options);
         });
     
     program
         .version(thisPackage.version)
-        .command('create')
-        .description('Generate GUI files')
-        .option("-s, --spec <file>", "Set specification file's path")
-        .option("-c, --compile", "Run sencha build after creation", true)
-        .option("-f, --force", "Remove existing files firstly", true)
+        .command('generate')
+        .description('Generate the ExtJS components with Siesta test skeletons')
+        .option('-s, --spec <spec_path>', 'generate from the given specification file')
+        .option('-c, --compile', 'run sencha building process after creation', true)
+        .option('-f, --force', 'overwrite existing generated files', true)
         .action(function(options) {
             require('../guigen.js').generate(options);
         });
 
     program
-        .command('start')
-        .description('Start a node.js servers for this application')
-        .option("-o, --open", "Open the application(s) in default browser")
-        .option("-t, --test" ,"Open the application (development) in IE, Chrome, Firefox")
-        .option("-w, --web-dev", "Start only the host webserver in development mode")
-        .option("-b, --web-prod", "Start only the host webserver in production mode, builded ExtJS files are used")
-        .action(function(options) {
-            require('../guigen.js').startServer(options);
-    });
-        
-    program
-        .command('test')
-        .description('Test the application: open in different browsers, open the test page or simply run the tests')
-        .option("-r, --run", "Run the tests with phantomJS")
-        .option("-o, --open", "Open the application in IE, Chrome, Firefox'")
-        .option("-p, --page", "Open the test page in default browser")
+        .command('run')
+        .description('Run the generated application. Development server will be started')
+        .option('-o, --open <browser_name>', 'open the application in given browser')
+        .option('-p, --prod', 'start another instance of the webserver in production mode')
         .action(function(options){
             require('../guigen.js').startBrowsers(options);
     });
     
     program
-            .command('phantom')
-            .action(function (options){
-                require('../guigen.js').test(options);
+        .command('test')
+        .description('Open the test page.')        
+        .option('-r, --run', 'Run the tests with phantomJS')
+        .action(function(options){
+            require('../guigen.js').startBrowsers(options);
     });
     
     program.parse(process.argv);

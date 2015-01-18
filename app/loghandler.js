@@ -22,7 +22,7 @@ exports.itemLog = function (info) {
 }
 
 exports.finishLog = function (info) {
-    console.log('%s!\n'.bold.green, info);
+    console.log('[DONE] %s!\n'.bold.green, info);
 }
 
 exports.err = function (err) {
