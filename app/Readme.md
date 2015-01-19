@@ -1,4 +1,6 @@
-Version 1.0.0 is coming in one month!
+<a href="#"><img src="https://raw.githubusercontent.com/vartomi/gui-tool/master/gui_tool_logo.png" height="40"></a>**GUI-TOOL**
+
+Version 1.0.0 is coming in the next month!
 
 Fixing issues...
 Preparing wiki docs...

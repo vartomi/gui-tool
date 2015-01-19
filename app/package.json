@@ -1,6 +1,6 @@
 {
   "name": "gui-tool",
-  "description": "A tool to generate an ExtJS prototype with Siesta tests.",
+  "description": "Generating of ExtJS prototypes and skeleton applications with Siesta tests has never been so easy and fast.",
   "keywords": [
     "rapid",
     "gui",
