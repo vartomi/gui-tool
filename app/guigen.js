@@ -1,5 +1,6 @@
 /*jshint node: true */
 'use strict';
+
 require('colors');
 
 var childProcess  = require('child_process'),
@@ -31,7 +32,7 @@ var execute = function(command, directory, finishMsg, colorizeObject, logging, c
             options.cwd += '/' + directory;
         }
 
-        child = exec(command, { cwd: directory }, function(error, stdout, stderr) {
+        child = exec(command, options, function(error, stdout, stderr) {
             if (error !== null) {
                 logHandler.err(error);
             } else {
@@ -66,7 +67,9 @@ var consoleTest = function () {
             }
             fs.writeFile(reportFile,
                          beautify(data), function(err) {
-                if (err) throw err;
+                if (err) {
+                    throw err;
+                }
                 console.log('The test report is generated (%s)'.cyan, reportFile);
                 open(reportFile, "chrome");
             });
@@ -74,10 +77,12 @@ var consoleTest = function () {
     });
 
 
-}
+};
 
 exports.init = function(name, options) {
     var reset = options.reset,
+        extjsPath = options.extjs,
+        siestaPath = options.siesta,
         dirName = name,
         extSrc = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',
         siestaSrc = 'http://www.bryntum.com/download/?product_id=siesta-lite',
@@ -95,7 +100,7 @@ exports.init = function(name, options) {
         success = generator.createDirectoryTree(dirName, directories, remove);        
         dirName += '/';
     }
-        
+            
     if (success) {  
         extZipPath = dirName + 'ext.zip';
         siestaZipPath = dirName + 'siesta.zip';
@@ -105,20 +110,30 @@ exports.init = function(name, options) {
         
         try {
             // ExtJS
-            downloadFramework(extSrc, extZipPath, function () {
-                decompressFramework(extZipPath, dirName + 'webui', function () {
-                    execute('mv * ./ext4', dirName + 'webui', null, null, null, function () {
-                        execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized');  
-                    });                    
-                });  
-            });  
+            if (!extjsPath) {
+                downloadFramework(extSrc, extZipPath, function () {
+                    decompressFramework(extZipPath, dirName + 'webui', function () {
+                        execute('mv * ./ext4', dirName + 'webui', null, null, null, function () {
+                            execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized');  
+                        });                    
+                    });  
+                });
+            } else {
+                execute('mv ' + extjsPath + ' ./webui/ext4', null, null, null, null, function () {
+                    execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized');  
+                }); 
+            }
             
             // Siesta
-            downloadFramework(siestaSrc, siestaZipPath, function () {
-                decompressFramework(siestaZipPath, dirName + 'test', function () {
-                    execute('mv * ./siesta', dirName + 'test');
+            if (!siestaPath) {
+                downloadFramework(siestaSrc, siestaZipPath, function () {
+                    decompressFramework(siestaZipPath, dirName + 'test', function () {
+                        execute('mv * ./siesta', dirName + 'test');
+                    });  
                 });  
-            });  
+            } else {
+                execute('mv ' + siestaPath + ' ./test');
+            }
         } catch(err) {
             logHandler.err(err);   
         }
@@ -145,9 +160,13 @@ var downloadFramework = function (src, out, callback) {
 
         res.on('end', function () {
             fs.writeFile(out, data, 'binary', function (err) {
-                if (err) throw err;
+                if (err) {
+                    throw err;
+                }
                 logHandler.log('downloading from ' + src + ' is done');
-                if (callback) callback();
+                if (callback) {
+                    callback();
+                }
             });
         });
     });
@@ -162,28 +181,38 @@ var decompressFramework = function (src, out, callback) {
     logHandler.log('extracting archive (' + src + ') ...');
 
     decompress.run(function (err) {
-        if (err) throw err;
+        if (err) {
+            throw err;
+        }
         fs.unlink(src, function (err) {
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
         });
         logHandler.finishLog('archive (' + src + ') extracted');
-        if (callback) callback();
+        if (callback) {
+            callback();
+        }
     });      
 };
 
 exports.generate = function(options) {
     var templatePath = path.resolve(__dirname, 'templates/'),
         targetPath = 'webui/app/',
-        testPath = 'test/gui/',
         compile = options.compile,
         forceRemove = options.force,
         specPath = options.spec,
         viewportSetup;
+    
+    if (!fs.existsSync(targetPath)) {
+        logHandler.err('command must be run from a gui-tool project folder');
+        return false;
+    }
 
     logHandler.log('generating basic ExtJS files...');
 
     if (specPath) {
-        specPath = path.resolve('.', options.spec)
+        specPath = path.resolve('.', options.spec);
     }
 
     if (generator.createDirectoryTree('webui/app', [
@@ -228,7 +257,7 @@ exports.generate = function(options) {
         execute('sencha app build', 'webui',
                 'Sencha build finished\n', [{text: '[INF]'}, {text: '[ERR]'}], true);
     }
-}
+};
 
 var openBrowsers = function () {
     var i;
@@ -236,7 +265,7 @@ var openBrowsers = function () {
         open(devUrl, browsers[i]);
         console.log('Open app in %s...'.cyan, browsers[i]);
     }
-}
+};
 
 exports.startBrowsers = function (options) {
     var i,
@@ -255,7 +284,7 @@ exports.startBrowsers = function (options) {
         open(devUrl + '/test');
         console.log('Open test page in browser...'.cyan);
     }
-}
+};
 
 exports.startServer = function(options) {
     var mock = options.mock,
@@ -276,7 +305,7 @@ exports.startServer = function(options) {
         console.log('Development host server starting...\n'.bold);
         if (openApp) {
             console.log('Open app in browser...'.cyan);
-            open(devUrl)
+            open(devUrl);
         } else if (test) {
             openBrowsers();
         }
@@ -290,7 +319,7 @@ exports.startServer = function(options) {
             open(prodUrl);
         }
     }
-}
+};
 
 var exitHandler = function () {
     var i;
@@ -300,7 +329,7 @@ var exitHandler = function () {
             childs[i].process.kill();
         }
     }
-}
+};
 
 process.on('exit', exitHandler);
 

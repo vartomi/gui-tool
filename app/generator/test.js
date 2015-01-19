@@ -1,9 +1,10 @@
+/*jshint node: true */
+'use strict';
+
 var generator = require('../lib/generator'),  
-    path = require('path')
-    colors = require('colors'),
+    path = require('path'),
     templatePath = path.resolve(__dirname, '../templates/'),
-    targetPath = 'webui/app/',
-    testPath = 'test/gui/';
+    testPath = 'test';
     
 exports.createTests = function (viewportSetup) {
     var urlsArray = [],
@@ -26,7 +27,7 @@ exports.createTests = function (viewportSetup) {
         urlsArray.push('{url: \'test/gui/' + files[i].url + '\'}');
         generator.processTemplate(viewportSetup, {
             sourceBaseDir: templatePath + '/test',
-            targetBaseDir: testPath,
+            targetBaseDir: testPath + '/gui',
             template: files[i].template,            
             fileName: files[i].url
         });
@@ -39,10 +40,16 @@ exports.createTests = function (viewportSetup) {
     ].forEach(function(fileName) {
         generator.processTemplate(viewportSetup, {
                 sourceBaseDir: templatePath + '/test',
-                targetBaseDir: testPath,
+                targetBaseDir: testPath + '/gui',
                 template: fileName                           
         });
     });
-}
+    
+    generator.processTemplate(null, {
+        sourceBaseDir: templatePath + '/test',
+        targetBaseDir: testPath,
+        template: 'index.html' 
+    });
+};
 
 

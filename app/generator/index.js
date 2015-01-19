@@ -77,7 +77,6 @@ exports.processTemplate = function (specPath) {
         guiSpec = yaml.load(fs.readFileSync('./specification/gui.yml'));
     }
     
-    console.log('WAT-1');
     specification.setSpecification(guiSpec);
     
     var staticViews = guiSpec.views,
@@ -90,7 +89,6 @@ exports.processTemplate = function (specPath) {
         viewportSetup = {};
 
     schemaErrors = schema.validate(guiSpec, schemaPath);
-    console.log('WAT-2');
 
     if (schemaErrors.length > 0) {
         logHandler.errors(schemaErrors);

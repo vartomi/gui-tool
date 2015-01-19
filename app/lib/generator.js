@@ -8,7 +8,7 @@ var mu = require('mu2'),
     wrench = require('wrench'),
     extend = require('./extend'),
     beautify = require('js-beautify').js_beautify;
-var verbose = true;
+var verbose = false;
 
 exports.createDirectoryTree = function(rootDirName, projectTree, removeIfExist) {
     var rootDirPath = path.resolve(rootDirName);
@@ -40,7 +40,7 @@ exports.copyDir = function(context, opts) {
 };
 
 exports.copyFile = function(fileName, sourceBaseDir, targetBaseDir, context) {
-        console.log('copyFile...' + fileName);
+        if (verbose) console.log('copyFile...' + fileName);
 
     var sourceFileName = path.resolve(sourceBaseDir, fileName),
         destFileName = path.resolve(targetBaseDir, fileName);
@@ -64,7 +64,7 @@ exports.processTemplate = function(context, opts) {
     fileType = fileType[fileType.length -1];
     
     if (fileType === 'js') {
-        console.log('js formatted: ' + fileName);
+        if (verbose) console.log('js formatted: ' + fileName);
     }
                 
 
