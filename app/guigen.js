@@ -21,34 +21,36 @@ var childProcess  = require('child_process'),
     prodUrl = 'http://localhost:4008',
     childs = [];
 
-var execute = function(command, directory, finishMsg, colorizeObject, logging, callback) {
+var execute = function(command, directory, finishMsg, logging, callback) {
     var options = {
-            cwd: path.resolve(process.cwd(), '')
+            cwd: path.resolve(directory)
         },
         child;
     
+    console.log(directory);
+    console.log(path.resolve(directory));
+    
     try {
-        if (directory) {
-            options.cwd += '/' + directory;
-        }
-
-        child = exec(command, options, function(error, stdout, stderr) {
-            if (error !== null) {
-                logHandler.err(error);
+        child = exec(command, options, function(error) {
+            if (error) {
+                logHandler.err(command + '\n' + error.stack);
             } else {
-                if (finishMsg) logHandler.finishLog(finishMsg);
-                if (callback) callback();
+                if (finishMsg) {
+                    logHandler.finishLog(finishMsg);
+                }
+                if (callback) {
+                    callback();
+                }
             }            
         });
         if (logging) {
             child.stdout.on('data', function(buf) {
-                var s = String(buf);                    
-                console.log(s.grey);
+                logHandler.log(buf.replace('\n',''));
             });
         }
 
         child.stderr.on('data', function (buf) {
-            console.log(String(buf).red);
+            logHandler.err(buf.replace('\n', ''));
         });
 
         childs.push({process: child, cmd: directory + '/' + command});
@@ -113,14 +115,14 @@ exports.init = function(name, options) {
             if (!extjsPath) {
                 downloadFramework(extSrc, extZipPath, function () {
                     decompressFramework(extZipPath, dirName + 'webui', function () {
-                        execute('mv * ./ext4', dirName + 'webui', null, null, null, function () {
-                            execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized');  
+                        execute('mv * ./ext4', dirName + 'webui', null, null, function () {
+                            execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
                         });                    
                     });  
                 });
             } else {
-                execute('mv ' + extjsPath + ' ./webui/ext4', null, null, null, null, function () {
-                    execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized');  
+                execute('mv ' + extjsPath + ' ./webui/ext4', null, null, null, function () {
+                    execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
                 }); 
             }
             
@@ -198,13 +200,13 @@ var decompressFramework = function (src, out, callback) {
 
 exports.generate = function(options) {
     var templatePath = path.resolve(__dirname, 'templates/'),
-        targetPath = 'webui/app/',
+        targetPath = 'webui/app',
         compile = options.compile,
         forceRemove = options.force,
         specPath = options.spec,
         viewportSetup;
     
-    if (!fs.existsSync(targetPath)) {
+    if (!fs.existsSync('webui')) {
         logHandler.err('command must be run from a gui-tool project folder');
         return false;
     }
@@ -255,68 +257,35 @@ exports.generate = function(options) {
     if (compile) {
         console.log('Sencha building...\n'.bold);
         execute('sencha app build', 'webui',
-                'Sencha build finished\n', [{text: '[INF]'}, {text: '[ERR]'}], true);
+                'Sencha build finished\n', true);
     }
 };
 
-var openBrowsers = function () {
-    var i;
-    for(i = 0; i < browsers.length; i++) {
-        open(devUrl, browsers[i]);
-        console.log('Open app in %s...'.cyan, browsers[i]);
-    }
+var openBrowser = function (browser, url) {
+    var selectedBrowser = browsers[browser] || 'default browser';
+    logHandler.log('open app in ' + selectedBrowser + ' ...' );  
+    open(url, browsers[browser]);    
 };
 
-exports.startBrowsers = function (options) {
-    var i,
-        openUrl = options.open,
-        run = options.run,
-        test = options.page;
-    if (openUrl){
-       openBrowsers();
-    }
-
-    if (run) {
-        consoleTest();
-    }
-
-    if (test){
-        open(devUrl + '/test');
-        console.log('Open test page in browser...'.cyan);
-    }
-};
-
-exports.startServer = function(options) {
-    var mock = options.mock,
-        webdev = options.webDev,
-        webprod = options.webProd,
-        openApp = options.open,
-        test = options.test,
-        devPath = path.resolve('./webui', ''),
+exports.start = function (options) {
+    var browser = options.open,
+        prod = options.prod,
         prodPath = path.resolve('./webui/build/production/RapidGui', ''),
-        i;
-
-    if (!mock && !webdev && !webprod) {
-        mock = webdev = webprod = true;
+        devPath = path.resolve('./webui', '');
+    
+    console.log('HEHE', mainDir + '/server');
+    execute('node server.js development ' + devPath + ' without-log', mainDir + '/server', null, true);
+    logHandler.log('development host server starting...');
+    
+    if (browser){
+        openBrowser(browser, devUrl);
     }
-
-    if (webdev) {
-        execute('node server.js development ' + devPath + ' without-log', mainDir + '/server');
-        console.log('Development host server starting...\n'.bold);
-        if (openApp) {
-            console.log('Open app in browser...'.cyan);
-            open(devUrl);
-        } else if (test) {
-            openBrowsers();
-        }
-    }
-
-    if (webprod) {
-        execute('node server.js production ' + prodPath + ' without-log', mainDir + '/server');
-        console.log('Production host server starting...\n'.bold);
-        if (openApp) {
-            console.log('Open builded app in browser...'.cyan);
-            open(prodUrl);
+    
+    if (prod) {
+        execute('node server.js production ' + prodPath + ' without-log', mainDir + '/server', null, true);
+        logHandler.log('production host server starting...');
+        if (browser) {
+            openBrowser(browser, prodUrl);
         }
     }
 };

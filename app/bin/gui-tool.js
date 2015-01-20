@@ -7,7 +7,18 @@
  */
 (function() {
     var program = require('commander'),
+        logHandler = require('../loghandler.js'),
         thisPackage = require(__dirname + '/../package.json');
+    
+    if (!process.argv[2]) {
+        logHandler.err('missing command');
+        return false;
+    }
+    
+    function programHeader() {
+        console.log(' ' + thisPackage.name + ' ' + thisPackage.version + '\n');
+    }
+    
     program._name = thisPackage.name;
     program.version(thisPackage.version);
 
@@ -19,7 +30,7 @@
         .option('-e, --extjs <extjs_path>', 'init with given extjs framework')
         .option('-s, --siesta <siesta_path>', 'init with given siesta framework')
         .action(function(dir, options) {
-            console.log(' ' + thisPackage.name + ' ' + thisPackage.version + '\n');
+            programHeader();
             require('../guigen.js').init(dir, options);
         });
     
@@ -30,7 +41,7 @@
         .option('-c, --compile', 'run sencha building process after creation', true)
         .option('-f, --force', 'overwrite existing generated files', true)
         .action(function(options) {
-            console.log(' ' + thisPackage.name + ' ' + thisPackage.version + '\n');
+            programHeader();
             require('../guigen.js').generate(options);
         });
 
@@ -40,7 +51,8 @@
         .option('-o, --open <browser_name>', 'open the application in given browser')
         .option('-p, --prod', 'start another instance of the webserver in production mode')
         .action(function(options){
-            //require('../guigen.js').startBrowsers(options);
+            programHeader();
+            require('../guigen.js').start(options);
     });
     
     program
@@ -49,6 +61,13 @@
         .option('-r, --run', 'Run the tests with phantomJS')
         .action(function(options){
             //('../guigen.js').startBrowsers(options);
+    });
+    
+    program
+        .command('*')
+        .action(function(env){
+            logHandler.err('invalid command: ' + env);
+            return false;
     });
     
     program.parse(process.argv);

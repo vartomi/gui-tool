@@ -1,6 +1,31 @@
 /*jshint node: true */
 'use strict';
 
+require('colors');
+
+var senchaColors = {
+    '[ERR]': 'red',
+    '[WRN]': 'yellow'
+};
+
+function senchaLogger (log) {
+    var senchaTagBegin = log.indexOf('['),        
+        out = '',
+        senchaTagEnd,
+        senchaTag,
+        senchaLog;
+    
+    senchaTagEnd = log.indexOf(']') + 1;        
+    senchaTag = log.slice(senchaTagBegin, senchaTagEnd);
+    if (senchaColors[senchaTag]) {
+        out = senchaTag[senchaColors[senchaTag]];
+    } else {
+        out = senchaTag;
+    }
+    senchaLog = log.replace(senchaTag + ' ', '');
+    console.log(out.bold, senchaLog);
+}
+
 exports.error = function (error) {
     console.log('Specification error:\n %s'.bold.red, error);
     process.exit(1);
@@ -29,11 +54,23 @@ exports.finishLog = function (info) {
 };
 
 exports.err = function (err) {
-    console.error('[ERR]'.bold.red, err.bold);
+    var senchaTagBegin = err.indexOf('[');
+    
+    if (senchaTagBegin > -1) {
+        senchaLogger(err);
+    } else {
+        console.error('[ERR]'.bold.red, err.bold);
+    }   
 };
 
 exports.log = function (log) {
-    console.log('[INF]'.bold, log);
+    var senchaTagBegin = log.indexOf('[');
+    
+    if (senchaTagBegin > -1) {
+        senchaLogger(log);
+    } else {
+        console.log('[INF]'.bold, log);
+    }
 };
 
 

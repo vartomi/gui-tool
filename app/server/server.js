@@ -18,7 +18,7 @@ if( process.argv.length >= 3) {
     config = require( './config.js' ).parameters;
 }
 
-console.log( config );
+console.log('document root: %s', documentRoot);
 
 if (process.argv.indexOf('without-log')){
     withoutLog = true;
@@ -65,5 +65,5 @@ server.all("*", accessLogger, restrict);
 
 // Start the server to listen
 server.listen( config.port );
-console.log( "Express server listening on port %d in %s mode".green,
+console.log( 'server  listening on port ' +  '%d'.bold.yellow + ' in %s mode',
     config.port, server.settings.env );
