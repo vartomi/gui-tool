@@ -53,7 +53,14 @@ Before you start it, please check the [requirements](#requirements)!
      |- siesta
      |- index.html # new file
   ```
+ 5. Finally you can test the generated ExtJS application just run the following command:
+ 
+    `gui-tool run`
 
+   > If you would like to open the application in browser in one step, you can use `-o <browser_name>` option. For example with usage of alias: `gui-tool run --open chrome`
+   
+   > Not only the development version of the application can be started, but the builded version too. With `-p` or `--prod` flags the tool will start the production server as well. And if the `-o` or `--open` flag is also set with the `<browser_name>`, then the development and the production version of the application will be opened in two different tabs.
+   
 <a name="specification"></a>
 ##**How to specify?**
 Gui-tool use an own specifcation schema to describe how the application should look like and what kind of models it has. In `specification` directory the `gui.yml` file is an example specification file. It's used by the application without given other specification file.
