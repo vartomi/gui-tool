@@ -22,8 +22,11 @@ Before you start it, please check the [requirements](#requirements)!
  
  
  2. Create a new gui-tool project. If you use the `name` optional variable, the root directory will be also created with the given name. Otherwise you need to create a directory and run the command inside. The tool will download the ExtJS framework (4.2.1 gpl) into the `<project_name>/webui` directory.
+ 
+     `gui-tool init [name]`
+    > If you would like to use own ExtJS SDK or Siesta version, you can give the folder path of them with optional flags:
+      <br/>`--siesta <siesta_path> --extjs <extjs_path>`
     
-    `gui-tool init [name]`
  
  3. If everything is created successfully, you need to see the following hierarchy.
     ```
