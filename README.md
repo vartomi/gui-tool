@@ -65,6 +65,8 @@ Before you start it, please check the [requirements](#requirements)!
 ##**How to specify?**
 Gui-tool use an own specifcation schema to describe how the application should look like and what kind of models it has. In `specification` directory the `gui.yml` file is an example specification file. It's used by the application without given other specification file.
 
+Details about the specification schema can be found in [gui-tool Wiki](https://github.com/vartomi/gui-tool/wiki/Specification-schema)
+
 <a name="development"></a>
 ##**Development**
 If you need to improve or develop specific functionalitites, UI elements for the generated ExtJS application, you can extend the auto-generated code. It's already a well-formatted and readable source under `webui/app` directory.
