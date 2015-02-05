@@ -48,7 +48,7 @@ var createViews = function (layout, staticViews) {
     };  
     
     staticViews.forEach(function(view) {
-        type = view.design.type;
+        type = view.layout.type;
         
         if (type === 'window') {
             windowGenerator.create(view, viewsAndRequires);
@@ -59,7 +59,7 @@ var createViews = function (layout, staticViews) {
         } else if (type === 'panel') {
             
         } else {
-            logHandler.error('Type \'' + type + '\' is not defined for design of ' + view.name + '!');           
+            logHandler.error('Type \'' + type + '\' is not defined for layout of ' + view.name + '!');           
         }
     });
     
@@ -89,7 +89,7 @@ exports.processTemplate = function (specPath) {
         viewportSetup = {};
 
     schemaErrors = schema.validate(guiSpec, schemaPath);
-
+    
     if (schemaErrors.length > 0) {
         logHandler.errors(schemaErrors);
     } else {
@@ -102,9 +102,12 @@ exports.processTemplate = function (specPath) {
         template: 'sencha.cfg'
     });
     
-    modelsAndStores = modelGenerator.createStoresWithModels(models);
-    viewportSetup.models = modelsAndStores.models;
-    viewportSetup.stores = modelsAndStores.stores;
+    if (models) {
+        modelsAndStores = modelGenerator.createStoresWithModels(models);
+
+        viewportSetup.models = modelsAndStores.models;
+        viewportSetup.stores = modelsAndStores.stores;
+    }
     
     viewsAndRequires = createViews(layout, staticViews);
     

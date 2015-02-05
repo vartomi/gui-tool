@@ -24,7 +24,7 @@ exports.create = function (view, viewsAndRequires) {
     try {
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
-        configObj.title = view.design.title || view.name;   
+        configObj.title = view.layout.title || view.name;   
         configObj.optionalConfig = '';
         
         

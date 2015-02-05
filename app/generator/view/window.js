@@ -18,17 +18,17 @@ exports.create = function (view, viewsAndRequires) {
     try {
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
-        configObj.title = view.design.title;
-        configObj.height = view.design.height;
-        configObj.width = view.design.width;
+        configObj.title = view.layout.title;
+        configObj.height = view.layout.height;
+        configObj.width = view.layout.width;
 
         content.forEach(function (el){
-           if (el.design.type === 'form') {
+           if (el.layout.type === 'form') {
                itemsArray.push('{xtype:' + com + el.alias + com + ',' +
                                'header: false }');
       
                formGenerator.create(el, viewsAndRequires);
-           } else if (el.design.type === 'grid') {
+           } else if (el.layout.type === 'grid') {
                itemsArray.push('{xtype:' + com + el.alias + com + ',' +
                                'header: false }');
       

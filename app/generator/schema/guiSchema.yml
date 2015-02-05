@@ -34,14 +34,14 @@ definitions:
             required: 
                 - name
                 - alias
-                - design
+                - layout
             properties:
                 name:
                     type: string
                 alias:
                     type: string
-                design:
-                    $ref: "#/definitions/design"
+                layout:
+                    $ref: "#/definitions/layout"
                 content:
                     $ref: "#/definitions/viewContent"
                 dataContent:
@@ -51,7 +51,7 @@ definitions:
                     items:
                         type: string
                      
-    design:
+    layout:
         type: object
         required: 
             - type
@@ -73,14 +73,14 @@ definitions:
             type: object
             required:
                 - name
-                - design
+                - layout
             properties:
                 name:
                     type: string
                 alias:
                     type: string
-                design:
-                    $ref: "#/definitions/design"
+                layout:
+                    $ref: "#/definitions/layout"
                 content:
                     $ref: "#/definitions/viewContent"
                 buttons:

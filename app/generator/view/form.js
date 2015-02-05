@@ -23,17 +23,17 @@ exports.create = function (view, viewsAndRequires) {
     try {
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
-        configObj.title = view.design.title;
+        configObj.title = view.layout.title;
 
         if (!content) {
             throw new Error('Missing contents for form \'' + view.name + '\'')
         }
         
         content.forEach(function (el){
-           if (el.design.type === 'text') {
+           if (el.layout.type === 'text') {
                itemsArray.push('{xtype: ' + com + 'textfield' + com + ', ' +
                        'fieldLabel: ' + com + el.name + com + '}');
-            } else if (el.design.type == 'password') {
+            } else if (el.layout.type == 'password') {
                 itemsArray.push('{xtype: ' + com + 'textfield' + com + ', ' +
                         'fieldLabel: ' + com + el.name + com + ',' +
                         'inputType: ' + com + el.type + com + '}'

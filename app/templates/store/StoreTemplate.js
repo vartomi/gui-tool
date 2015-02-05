@@ -9,12 +9,16 @@ Ext.define('RapidGui.store.{{definePath}}',{
            type: 'json',
            root: 'result.data'
        },
-    },
+    },   
     
     autoLoad: true,
        
     sorters: [
         {{sorters}}
+    ],
+    
+    data: [
+        {{data}}
     ]
 });
 

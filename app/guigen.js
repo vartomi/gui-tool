@@ -26,10 +26,7 @@ var execute = function(command, directory, finishMsg, logging, callback) {
             cwd: path.resolve(directory)
         },
         child;
-    
-    console.log(directory);
-    console.log(path.resolve(directory));
-    
+        
     try {
         child = exec(command, options, function(error) {
             if (error) {
@@ -198,6 +195,13 @@ var decompressFramework = function (src, out, callback) {
     });      
 };
 
+var exitIfNotProjectDir = function () {
+    if (!fs.existsSync('webui')) {
+        logHandler.err('command must be run from a gui-tool project folder');
+        exit(1);
+    }
+};
+
 exports.generate = function(options) {
     var templatePath = path.resolve(__dirname, 'templates/'),
         targetPath = 'webui/app',
@@ -206,10 +210,7 @@ exports.generate = function(options) {
         specPath = options.spec,
         viewportSetup;
     
-    if (!fs.existsSync('webui')) {
-        logHandler.err('command must be run from a gui-tool project folder');
-        return false;
-    }
+    exitIfNotProjectDir();
 
     logHandler.log('generating basic ExtJS files...');
 
@@ -273,7 +274,8 @@ exports.start = function (options) {
         prodPath = path.resolve('./webui/build/production/RapidGui', ''),
         devPath = path.resolve('./webui', '');
     
-    console.log('HEHE', mainDir + '/server');
+    exitIfNotProjectDir();
+    
     execute('node server.js development ' + devPath + ' without-log', mainDir + '/server', null, true);
     logHandler.log('development host server starting...');
     

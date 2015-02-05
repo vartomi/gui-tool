@@ -4,243 +4,46 @@ description: |
 extTheme: neptune
 
 layout:
-    - "loginpanel"
+    - "exampleview|examplegrid"
 
 views:
     -
-        name: LoginWindow
-        alias: loginwindow
-        design:
-            title: Login
-            type: window
-            height: 200
-            width: 400
-        content:
-            -
-                name: LoginForm
-                alias: loginform
-                design:
-                    type: form
-                content:
-                    -
-                        name: Username
-                        design:
-                            type: text
-                    -
-                        name: Password
-                        design:
-                            type: password
-                buttons: [login]
-    -
-        name: EventWindow
-        alias: eventwindow
-        design:
-            title: Events
-            type: window
-            height: 300
-            width: 600
-        content:
-            -
-                name: EventsGrid
-                alias: eventsgrid
-                design:
-                    type: grid
-                dataContent:
-                    model: Event
-    -
-        name: EventGrid
-        alias: eventlist
-        design:
-            title: Events
-            type: grid
-        dataContent:
-            model: Event
-            edit: true
-            filter:
-                -
-                    type: check
-                    field: type
-                    items: [leg, fpr, sby, off, vac, sim, plusT]
-                -
-                    type: check
-                    field: startLocation
-                    items: [BUD, TXL]
-                -
-                    type: check
-                    field: endLocation
-                    items: [AMS, BUD]
-        buttons: [clearFilter, reload]
-    -
-        name: PersonGrid
-        alias: personlist
-        design:
-            title: Persons
+        name: ExampleGrid
+        alias: examplegrid
+        layout: 
+            title: Grid example
             type: grid
         dataContent:
             model: Person
-            bigData: about
-            filter:
-                -
-                    alias: searchperson
+    - 
+        name: ExampleView
+        alias: exampleview
+        layout:
+            title: Use case example
+            type: form
+        content:
+            -
+                name: ExampleField
+                layout:
                     type: text
-                    field: all
-                -
-                    type: check
-                    field: gender
-                    items: [male, female]
-        buttons: ["clearFilter"]
-    -
-        name: EventForm
-        alias: eventform
-        design:
-            title: Add event
-            type: form
-        dataContent:
-            model: Event
-        content:
-            -
-                name: Fields
-                design:
-                    type: auto
-        buttons: [add]
-    -
-        name: PersonForm
-        alias: personform
-        design:
-            title: Modify person data
-            type: form
-        dataContent:
-            model: Person
-        content:
-            -
-                name: Fields
-                design:
-                    type: auto
-        buttons: [save]
-    -
-        name: LoginPanel
-        alias: loginpanel
-        design:
-            title: Test dynamic components
-            type: form
-        content:
-            -
-                name: 'nothing'
-                design:
-                    type: auto
-        buttons: [login]
-
+        buttons: [show]
+        
 models:
-    -
-        name: Event
-        proxy: http://localhost:3007/rest/events
-        fields: [id, type, startLocation, endLocation, duration]
-        typedFields:
-            -
-                name: beginDt
-                type: date
-                format: c
-            -
-                name: endDt
-                type: date
-                format: c
-        has:
-            -
-                name: Person
-                key: personId
-                inResource: false
-    -
+     -
         name: Person
-        proxy: http://localhost:3007/rest/persons
-        fields: [id, contractCode, firstName, surName, gender, email, address, about]
+        proxy: mock:10
+        fields: [firstName, lastName]
         typedFields:
             -
                 name: age
                 type: int
-            -
-                name: employmentBeginDt
-                type: date
-                format: c
-            -
-                name: registered
-                type: date
-                format: c
+    
+        
 useCases:
     -
         type: click
-        on: loginform.#loginBtn
-        do:
-            -
-                cmd: close.loginwindow
-            -
-                cmd: show
-                msg: Logged in!
-    -
-        type: select
-        on: personlist
-        do:
-            -
-                cmd: filter.eventlist
-            -
-                cmd: load.personform
-    -
-        type: click
-        on: eventform.#addBtn
+        on: exampleview.#showBtn
         do:
             -
                 cmd: show
-                msg: Clicked!
-    -
-        type: click
-        on: loginpanel.#loginBtn
-        do:
-            -
-                cmd: show.loginwindow
-    -
-        type: click
-        on: loginpanel.#eventsBtn
-        do:
-            -
-                cmd: show.eventwindow
-    -
-        type: click
-        on: eventlist.#clearFilterBtn
-        do:
-            -
-                cmd: clear.eventlist
-    -
-        type: click
-        on: personlist.#clearFilterBtn
-        do:
-            -
-                cmd: clear.personlist
-    -
-        type: select
-        on: eventlist
-        do:
-            -
-                cmd: load.eventform
-    -
-        type: click
-        on: eventlist.checkbox
-        do:
-            -
-                cmd: filter.eventlist
-    -
-        type: click
-        on: personlist.checkbox
-        do:
-            -
-                cmd: filter.personlist
-    -
-        type: click
-        on: eventlist.#reloadBtn
-        do:
-            -
-                cmd: load.eventlist
-    -
-        type: type
-        on: personlist.#searchpersonTextfield
-        do:
-            -
-                cmd: filter.personlist
+                msg: Welcome in gui-tool\'s world!
