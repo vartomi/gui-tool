@@ -25,8 +25,10 @@ Before you start it, please check the [requirements](#requirements)!
  
      `gui-tool init [name]`
     > If you would like to use own ExtJS SDK or Siesta version, you can give the folder path of them with optional flags:
-      <br/>`--siesta <siesta_path> --extjs <extjs_path>`
+      <br/>`--siesta <siesta_path> --extjs <extjs_path>`<br/>
+      <b>Now only 4.x version of ExtJS is supported!</b>
     
+
  
  3. If everything is created successfully, you need to see the following hierarchy.
     ```python
