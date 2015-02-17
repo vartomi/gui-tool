@@ -4,8 +4,8 @@ description: |
 extTheme: neptune
 
 layout:
-    - "exampleview|examplegrid"
-    - "exampleform|container"
+    - "examplegrid|exampleform"
+    - "exampleview"
 
 views:
     -
