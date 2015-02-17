@@ -2,15 +2,15 @@
 'use strict';
 
 require('colors');
+require('child_process');
 
-var childProcess  = require('child_process'),
-    http = require('http'),
+var http = require('http'),
     exec = require('child_process').exec,
     open = require('open'),
     Decompress = require('decompress'),
     generator = require('./lib/generator'),
     fs = require('fs'),
-    beautify = require('js-beautify').js_beautify,
+    //beautify = require('js-beautify').js_beautify,
     guiGenerator = require('./generator/index.js'),
     testGenerator = require('./generator/test.js'),
     logHandler = require('./loghandler.js'),
@@ -19,6 +19,7 @@ var childProcess  = require('child_process'),
     browsers = ["chrome", "firefox", "iexplore"],
     devUrl = 'http://localhost:4007',
     prodUrl = 'http://localhost:4008',
+    testUrl = 'http://localhost:4007/test',
     childs = [];
 
 var execute = function(command, directory, finishMsg, logging, callback) {
@@ -56,7 +57,8 @@ var execute = function(command, directory, finishMsg, logging, callback) {
     }
 };
 
-var consoleTest = function () {
+// phantom js
+/*var consoleTest = function () {
     var reportFile = path.resolve('test/gui/report.json');
     console.log('Run test in windows cmd...'.cyan);
     open('/k cd test/siesta/bin && phantomjs http://localhost:4007/test --report-format JSON --report-file ../../gui/report.json && exit ', 'cmd', function () {
@@ -76,7 +78,7 @@ var consoleTest = function () {
     });
 
 
-};
+};*/
 
 exports.init = function(name, options) {
     var reset = options.reset,
@@ -198,7 +200,7 @@ var decompressFramework = function (src, out, callback) {
 var exitIfNotProjectDir = function () {
     if (!fs.existsSync('webui')) {
         logHandler.err('command must be run from a gui-tool project folder');
-        exit(1);
+        process.exit(1);
     }
 };
 
@@ -264,23 +266,33 @@ exports.generate = function(options) {
 
 var openBrowser = function (browser, url) {
     var selectedBrowser = browsers[browser] || 'default browser';
-    logHandler.log('open app in ' + selectedBrowser + ' ...' );  
+    logHandler.log('open ' + selectedBrowser + ' ...' );  
     open(url, browsers[browser]);    
 };
 
 exports.start = function (options) {
-    var browser = options.open,
+    var guitool = this,
+        browser = options.open,
         prod = options.prod,
+        watch = options.watch,
         prodPath = path.resolve('./webui/build/production/RapidGui', ''),
         devPath = path.resolve('./webui', '');
     
     exitIfNotProjectDir();
-    
+        
     execute('node server.js development ' + devPath + ' without-log', mainDir + '/server', null, true);
     logHandler.log('development host server starting...');
     
     if (browser){
         openBrowser(browser, devUrl);
+    }
+    
+    if (watch) {
+        logHandler.log('watching...');
+        fs.watchFile(path.resolve('./specification/gui.yml'), function () { 
+            guitool.generate({force: true});
+            logHandler.log('watching...');
+        });
     }
     
     if (prod) {
@@ -289,6 +301,18 @@ exports.start = function (options) {
         if (browser) {
             openBrowser(browser, prodUrl);
         }
+    }
+};
+
+exports.runTest = function (options) {
+    var phantomJS = options.run;
+    
+    if (phantomJS) {
+        // TODO phantom js
+        logHandler.err('phantomJS integration required');
+    } else {
+        openBrowser(null, testUrl); 
+        logHandler.log('test page loading...');
     }
 };
 

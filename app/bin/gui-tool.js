@@ -48,6 +48,7 @@
     program
         .command('run')
         .description('Run the generated application. Development server will be started')
+        .option('-w, --watch', 'regenerate automatically the files if the specification file is changed')
         .option('-o, --open <browser_name>', 'open the application in given browser')
         .option('-p, --prod', 'start another instance of the webserver in production mode')
         .action(function(options){
@@ -60,11 +61,13 @@
         .description('Open the test page.')        
         .option('-r, --run', 'Run the tests with phantomJS')
         .action(function(options){
-            //('../guigen.js').startBrowsers(options);
+            programHeader();
+            require('../guigen.js').runTest(options);
     });
     
     program
         .command('*')
+        .description('')
         .action(function(env){
             logHandler.err('invalid command: ' + env);
             return false;

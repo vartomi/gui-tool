@@ -3,3 +3,4 @@ nbproject
 /webui/app
 /webui/.sencha/app/sencha.cfg
 /test/gui
+/app/node_modules

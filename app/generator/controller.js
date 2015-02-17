@@ -113,7 +113,7 @@ var addControl = function (selector, type) {
     
     xtype = selectors[selectors.length -1].toLowerCase();
     
-    if (xtype.indexOf('list') > -1) {
+    if (xtype.indexOf('list') > -1 || xtype.indexOf('grid') > -1) {
         xtype = 'grid';
     } else if (xtype.indexOf('btn') > -1) {
         xtype = 'button';

@@ -1,7 +1,8 @@
 /*jshint node: true */
 "use strict";
 
-var express = require( 'express' );
+var express = require( 'express' ),
+    fs = require('fs');
 require('colors');
 
 // Get configured
@@ -35,7 +36,7 @@ server.configure( function() {
         server.use( express.session( {secret: 'keyboard cat'} ) );
         server.use( server.router );
         server.use( express.static( documentRoot ) );
-        server.use( '/test', express.static( __dirname + '/../../test'));
+        server.use( '/test', express.static( documentRoot + '/../test'));
     });
 
 server.configure( 'development', function() {
@@ -59,11 +60,18 @@ function accessLogger( req, res, next ) {
     next();
 }
 
+var io = require('socket.io').listen(server.listen( config.port));
+
+io.on('connection', function (socket) {   
+    fs.watchFile(documentRoot + '/app/Application.js', function (curr, prev) { 
+        io.emit('app change', curr);     
+    });
+});
 // Routes
 server.all("*", accessLogger, restrict);
 
 
 // Start the server to listen
-server.listen( config.port );
+//server.listen( config.port );
 console.log( 'server  listening on port ' +  '%d'.bold.yellow + ' in %s mode',
     config.port, server.settings.env );

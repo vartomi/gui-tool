@@ -5,6 +5,7 @@ extTheme: neptune
 
 layout:
     - "exampleview|examplegrid"
+    - "exampleform|container"
 
 views:
     -
@@ -27,12 +28,25 @@ views:
                 layout:
                     type: text
         buttons: [show]
+    -
+        name: ExampleForm
+        alias: exampleform
+        layout:
+            title: Form example
+            type: form
+        dataContent:
+            model: Person
+        content:
+            -
+                name: Fields
+                layout:
+                    type: auto
         
 models:
      -
         name: Person
         proxy: mock:10
-        fields: [firstName, lastName]
+        fields: [firstName, lastName, bio]
         typedFields:
             -
                 name: age
@@ -47,3 +61,9 @@ useCases:
             -
                 cmd: show
                 msg: Welcome in gui-tool\'s world!
+    -
+        type: select
+        on: examplegrid
+        do:
+            -
+                cmd: load.exampleform
