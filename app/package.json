@@ -8,12 +8,12 @@
     "skeleton",
     "extjs"
   ],
-  "version": "0.0.4",
+  "version": "0.9.0",
   "tags": [],
   "author": "Tamás Várhegyi <varhegyi.tomi@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/vartomi/gui-tool"
   },
   "bin": {
     "gui-tool": "./bin/gui-tool.js"

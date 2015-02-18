@@ -3,7 +3,15 @@ var generator = require('../lib/generator'),
     logHandler = require('../loghandler.js'),
     templatePath = path.resolve(__dirname, '../templates'),
     targetPath = 'webui/app/',
-    extPath = 'RapidGui.';    
+    extPath = 'RapidGui.',
+    proxyTpl = '\nproxy: {\
+        type: \'ajax\',\
+        reader: {\
+            url: \'{{proxyUrl}}\',\
+            type: \'json\',\
+            root: \'result.data\'\
+        },\
+    },\n';    
 
 exports.createStoresWithModels = function (models) {
     var modelName,
@@ -30,8 +38,10 @@ exports.createStoresWithModels = function (models) {
             
             proxy = model.proxy.split(':');
             if (proxy[0] === 'mock') {
-                dataArray = generateMockData(model.fields, proxy[1]);                
-                proxy = '';
+                dataArray = generateMockData(model.fields, proxy[1]);
+                proxy = null;
+            } else {
+                proxyTpl = proxyTpl.replace('{{proxyUrl}}', proxy);
             }
 
             // Store generating
@@ -39,7 +49,7 @@ exports.createStoresWithModels = function (models) {
             {
                 definePath: storeName,
                 model: modelPath,
-                proxyUrl: proxy,
+                proxy: proxy ? proxyTpl : '',
                 data: dataArray
             }, {
                 sourceBaseDir: templatePath + '/store',

@@ -25,8 +25,9 @@
     // Setup the project generator command
     program
         .command('init [name]')
-        .description('Init a gui-tool project structure')
+        .description('Init a gui-tool project structure (default ExtJS version: 4.2.1)')
         .option('-r, --reset', 're-generate structure')
+        .option('-x, --extversion <extjs_version>', 'ExtJS version, possible values: 4 (4.2.1), 5 (5.1.0)')
         .option('-e, --extjs <extjs_path>', 'init with given extjs framework')
         .option('-s, --siesta <siesta_path>', 'init with given siesta framework')
         .action(function(dir, options) {

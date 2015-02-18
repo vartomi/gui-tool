@@ -84,13 +84,28 @@ exports.init = function(name, options) {
     var reset = options.reset,
         extjsPath = options.extjs,
         siestaPath = options.siesta,
+        extVersion = options.extversion,
         dirName = name,
-        extSrc = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',
+        ext4Src = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',
+        ext5Src = 'http://cdn.sencha.com/ext/gpl/ext-5.1.0-gpl.zip',
+        extSrc,
         siestaSrc = 'http://www.bryntum.com/download/?product_id=siesta-lite',
         remove = (reset ? true : false),
         directories = ['test', 'specification', 'webui'],
         success = true,
+        templatePath = mainDir + '/templates',
         extZipPath, siestaZipPath;
+    
+    if (extVersion) {
+        switch (extVersion) {
+            case "4": extSrc = ext4Src; break;
+            case "5": extSrc = ext5Src; break;
+            default: logHandler.err('Wrong ExtJS version: ' + extVersion); process.exit(1);
+        }
+    } else {
+        extSrc = ext4Src;
+        extVersion = "4";
+    }
     
     if (!dirName) {        
         directories.forEach(function (dir) {
@@ -101,27 +116,36 @@ exports.init = function(name, options) {
         success = generator.createDirectoryTree(dirName, directories, remove);        
         dirName += '/';
     }
+    
+    console.log(extVersion, templatePath, dirName);
+    generator.processTemplate({
+                version: extVersion
+            }, {
+                sourceBaseDir: templatePath + '/guitool',
+                targetBaseDir: './' + dirName,
+                template: 'guitool.json'
+    });
             
-    if (success) {  
+    /*if (success) {  
         extZipPath = dirName + 'ext.zip';
         siestaZipPath = dirName + 'siesta.zip';
         
         logHandler.finishLog('directories created');
-        generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');        
+        generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');    
         
         try {
             // ExtJS
             if (!extjsPath) {
                 downloadFramework(extSrc, extZipPath, function () {
                     decompressFramework(extZipPath, dirName + 'webui', function () {
-                        execute('mv * ./ext4', dirName + 'webui', null, null, function () {
-                            execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
+                        execute('mv * ./extSDK', dirName + 'webui', null, null, function () {
+                            execute('sencha -sdk ./extSDK generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
                         });                    
                     });  
                 });
             } else {
-                execute('mv ' + extjsPath + ' ./webui/ext4', null, null, null, function () {
-                    execute('sencha -sdk ./ext4 generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
+                execute('mv ' + extjsPath + ' ./webui/extSDK', null, null, null, function () {
+                    execute('sencha -sdk ./extSDK generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
                 }); 
             }
             
@@ -140,7 +164,7 @@ exports.init = function(name, options) {
         }
     } else {
         logHandler.err('directory contains already initialized gui-tool project!');   
-    }
+    }*/
 };
 
 var downloadFramework = function (src, out, callback) {
@@ -206,7 +230,7 @@ var exitIfNotProjectDir = function () {
 
 exports.generate = function(options) {
     var templatePath = path.resolve(__dirname, 'templates/'),
-        targetPath = 'webui/app',
+        targetPath = 'webui',
         compile = options.compile,
         forceRemove = options.force,
         specPath = options.spec,
@@ -231,14 +255,24 @@ exports.generate = function(options) {
         viewportSetup = guiGenerator.processTemplate(specPath);
 
         [
-            'Application.js',
+            'extjs5/Application.js',
             'view/Viewport.js'
         ].forEach(function(fileName) {
-//            generator.copyFile(fileName, templatePath, targetPath);
+            generator.processTemplate(viewportSetup, {
+                        sourceBaseDir: templatePath,
+                        targetBaseDir: targetPath + '/app',
+                        template: fileName,
+                        fileName: fileName.replace(/(extjs4\/|extjs5\/)/, '')
+                });
+        });
+        [
+            'extjs5/app.js'
+        ].forEach(function(fileName)  {
             generator.processTemplate(viewportSetup, {
                         sourceBaseDir: templatePath,
                         targetBaseDir: targetPath,
-                        template: fileName
+                        template: fileName,
+                        fileName: fileName.replace(/(extjs4\/|extjs5\/)/, '')
                 });
         });
         logHandler.finishLog('ExtJS components created');
