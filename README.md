@@ -5,6 +5,9 @@
 ####Create ExtJS prototype applications easier and faster.
 
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
+  > Supported ExtJS versions:
+ - <b>4.x</b> (built in 4.2.1)
+ - <b>5.x</b> (built in 5.1.0)
 
 [Getting Started](#getting-started)<br/>
 [How to specify?](#specification)<br/>
@@ -21,12 +24,13 @@ Before you start it, please check the [requirements](#requirements)!
       `npm install gui-tool -g`
  
  
- 2. Create a new gui-tool project. If you use the `name` optional variable, the root directory will be also created with the given name. Otherwise you need to create a directory and run the command inside. The tool will download the ExtJS framework (4.2.1 gpl) into the `<project_name>/webui` directory.
+ 2. Create a new gui-tool project. If you use the `name` optional variable, the root directory will be also created with the given name. Otherwise you need to create a directory and run the command inside. The tool will download the ExtJS framework (4.2.1 gpl or 5.1.0 gpl) into the `<project_name>/webui` directory. 
  
      `gui-tool init [name]`
+    > With `-x` or `--extjsversion` option you can decide which ExtJS version should be downloaded and used, default is <b>5.1.0</b>:
+      <br/> `gui-tool init -x 4` in this case gui-tool will use <b>4.2.1</b> version of ExtJS.
     > If you would like to use own ExtJS SDK or Siesta version, you can give the folder path of them with optional flags:
-      <br/>`--siesta <siesta_path> --extjs <extjs_path>`<br/>
-      <b>Now only 4.x version of ExtJS is supported!</b>
+      <br/>`--siesta <siesta_path> --extjs <extjs_path>`
     
 
  
