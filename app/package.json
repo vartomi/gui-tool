@@ -6,9 +6,14 @@
     "gui",
     "prototype",
     "skeleton",
-    "extjs"
+    "extjs",
+    "siesta",
+    "phantomjs",
+    "extjs5",
+    "generator",
+    "command line"
   ],
-  "version": "0.9.0",
+  "version": "0.9.15",
   "tags": [],
   "author": "Tamás Várhegyi <varhegyi.tomi@gmail.com>",
   "repository": {
