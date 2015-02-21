@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/*jshint node: true */
 'use strict';
 
 /**
@@ -25,9 +24,9 @@
     // Setup the project generator command
     program
         .command('init [name]')
-        .description('Init a gui-tool project structure (default ExtJS version: 4.2.1)')
+        .description('Init a gui-tool project structure (default ExtJS version: 5.1.0)')
         .option('-r, --reset', 're-generate structure')
-        .option('-x, --extversion <extjs_version>', 'ExtJS version, possible values: 4 (4.2.1), 5 (5.1.0)')
+        .option('-x, --extversion <extjs_version>', 'ExtJS version, possible values: "4" (4.2.1), "5" (5.1.0)')
         .option('-e, --extjs <extjs_path>', 'init with given extjs framework')
         .option('-s, --siesta <siesta_path>', 'init with given siesta framework')
         .action(function(dir, options) {
@@ -38,7 +37,7 @@
     program
         .command('generate')
         .description('Generate the ExtJS components with Siesta test skeletons')
-        .option('-s, --spec <spec_path>', 'generate from the given specification file')
+        .option('-s, --spec <spec_file>', 'generate from the given specification file (looking up inside specification folder!)')
         .option('-c, --compile', 'run sencha building process after creation', true)
         .option('-f, --force', 'overwrite existing generated files', true)
         .action(function(options) {
@@ -59,8 +58,8 @@
     
     program
         .command('test')
-        .description('Open the test page.')        
-        .option('-r, --run', 'Run the tests with phantomJS')
+        .description('Open the test page (or open test report after test was running)')        
+        .option('-r, --run', 'Run the tests in console with phantomJS (Siesta integration is required!)')
         .action(function(options){
             programHeader();
             require('../guigen.js').runTest(options);

@@ -68,14 +68,7 @@ var createViews = function (layout, staticViews) {
 }
 
 exports.processTemplate = function (specPath) {
-    if (specPath){
-        console.log('Specification file was given...\n'.bold);
-        guiSpec = require(specPath);
-    } else {
-        console.log('Default specification file is used...'.bold);
-        console.log('Specification file: ' + path.resolve('', './specification/gui.yml') + '\n');
-        guiSpec = yaml.load(fs.readFileSync('./specification/gui.yml'));
-    }
+    guiSpec = yaml.load(fs.readFileSync(specPath));
     specification.setSpecification(guiSpec);
     var staticViews = guiSpec.views,
         models = guiSpec.models,

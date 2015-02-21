@@ -1,6 +1,3 @@
-/*jshint node: true */
-'use strict';
-
 require('colors');
 require('child_process');
 
@@ -10,19 +7,22 @@ var http = require('http'),
     Decompress = require('decompress'),
     generator = require('./lib/generator'),
     fs = require('fs'),
-    //beautify = require('js-beautify').js_beautify,
+    beautify = require('js-beautify').js_beautify,
     guiGenerator = require('./generator/index.js'),
     testGenerator = require('./generator/test.js'),
     logHandler = require('./loghandler.js'),
     path = require('path'),
-    mainDir = path.resolve(__dirname, ''),
+    mainDir = path.resolve(__dirname, ''),    
+    templatePath = mainDir + '/templates',
     browsers = ["chrome", "firefox", "iexplore"],
     devUrl = 'http://localhost:4007',
     prodUrl = 'http://localhost:4008',
     testUrl = 'http://localhost:4007/test',
+    configuration = {},
     childs = [];
 
 var execute = function(command, directory, finishMsg, logging, callback) {
+    'use strict';
     var options = {
             cwd: path.resolve(directory)
         },
@@ -57,28 +57,57 @@ var execute = function(command, directory, finishMsg, logging, callback) {
     }
 };
 
+var getConfiguration = function () {
+    var obj = JSON.parse(fs.readFileSync('guitool.json')),
+        prop;
+    for (prop in obj) {
+        configuration[prop] = obj[prop];
+    }
+};
+
+var setConfiguration = function (obj) {
+    generator.processTemplate({
+            version: obj.extjsversion,
+            specification: obj.specification,
+        }, {
+            sourceBaseDir: templatePath + '/guitool',
+            targetBaseDir: '.',
+            template: 'guitool.json'
+    });
+};
+
 // phantom js
-/*var consoleTest = function () {
-    var reportFile = path.resolve('test/gui/report.json');
-    console.log('Run test in windows cmd...'.cyan);
-    open('/k cd test/siesta/bin && phantomjs http://localhost:4007/test --report-format JSON --report-file ../../gui/report.json && exit ', 'cmd', function () {
-        fs.readFile(reportFile, 'utf8', function (err, data) {
-            if (err) {
-                throw err;
-            }
-            fs.writeFile(reportFile,
-                         beautify(data), function(err) {
+var consoleTest = function () {
+    var platform = process.platform,
+        reportFile = path.resolve('test/gui/report.json'),
+        isWin = /^win/.test(platform),
+        isMac = platform === 'darwin',
+        isLinux = platform === 'linux';
+    
+    exitIfNotProjectDir();
+    exitIfHasNotPhantomJS();
+    
+    if (isWin) {
+        logHandler.log('Run console test in Windows cmd...');
+        open('/k cd test/siesta/bin && phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile + ' && exit ', 'cmd', function () {
+            fs.readFile(reportFile, 'utf8', function (err, data) {
                 if (err) {
                     throw err;
                 }
-                console.log('The test report is generated (%s)'.cyan, reportFile);
-                open(reportFile, "chrome");
+                fs.writeFile(reportFile, beautify(data), function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                    logHandler.finishLog('The test report is generated: ' + reportFile);
+                    openBrowser(null, reportFile);
+                });
             });
         });
-    });
-
-
-};*/
+    } else {
+        logHandler.log('Run console test...');
+        logHandler.warn('OS might be not supported!');
+    }
+};
 
 exports.init = function(name, options) {
     var reset = options.reset,
@@ -93,7 +122,6 @@ exports.init = function(name, options) {
         remove = (reset ? true : false),
         directories = ['test', 'specification', 'webui'],
         success = true,
-        templatePath = mainDir + '/templates',
         extZipPath, siestaZipPath;
     
     if (extVersion) {
@@ -103,8 +131,9 @@ exports.init = function(name, options) {
             default: logHandler.err('Wrong ExtJS version: ' + extVersion); process.exit(1);
         }
     } else {
-        extSrc = ext4Src;
-        extVersion = "4";
+        // ExtJS 5.1.0 the default version
+        extSrc = ext5Src;
+        extVersion = "5";
     }
     
     if (!dirName) {        
@@ -117,16 +146,16 @@ exports.init = function(name, options) {
         dirName += '/';
     }
     
-    console.log(extVersion, templatePath, dirName);
     generator.processTemplate({
-                version: extVersion
-            }, {
-                sourceBaseDir: templatePath + '/guitool',
-                targetBaseDir: './' + dirName,
-                template: 'guitool.json'
+            version: extVersion,
+            specification: 'gui.yml',
+        }, {
+            sourceBaseDir: templatePath + '/guitool',
+            targetBaseDir: './' + dirName,
+            template: 'guitool.json'
     });
             
-    /*if (success) {  
+    if (success) {  
         extZipPath = dirName + 'ext.zip';
         siestaZipPath = dirName + 'siesta.zip';
         
@@ -164,7 +193,7 @@ exports.init = function(name, options) {
         }
     } else {
         logHandler.err('directory contains already initialized gui-tool project!');   
-    }*/
+    }
 };
 
 var downloadFramework = function (src, out, callback) {
@@ -223,7 +252,21 @@ var decompressFramework = function (src, out, callback) {
 
 var exitIfNotProjectDir = function () {
     if (!fs.existsSync('webui')) {
-        logHandler.err('command must be run from a gui-tool project folder');
+        logHandler.err('command must be run in a gui-tool project folder');
+        process.exit(1);
+    }
+};
+
+var exitIfNotInitializedProject = function () {
+    if (!fs.existsSync('guitool.json')) {
+        logHandler.err('command must be run in an initialized project folder');
+        process.exit(1);
+    }
+};
+
+var exitIfHasNotPhantomJS = function () {
+    if (!fs.existsSync('test/siesta/bin/phantomjs')) {
+        logHandler.err('phantomJS integration is missing, maybe Siesta Trial version is used');
         process.exit(1);
     }
 };
@@ -234,15 +277,37 @@ exports.generate = function(options) {
         compile = options.compile,
         forceRemove = options.force,
         specPath = options.spec,
-        viewportSetup;
+        templateExtDir = 'extjs',
+        extVersion, viewportSetup;
     
     exitIfNotProjectDir();
-
-    logHandler.log('generating basic ExtJS files...');
-
-    if (specPath) {
-        specPath = path.resolve('.', options.spec);
+    exitIfNotInitializedProject();
+    
+    try {        
+        getConfiguration();
+    } catch (err) {
+        logHandler.err('guitool.json project file has errors');
+        process.exit(1);
     }
+    
+    extVersion = configuration.extjsversion;   
+    templateExtDir += extVersion;
+
+    logHandler.log('generating basic ExtJS ' + extVersion + ' files...');
+
+    if (specPath){
+        logHandler.log('Specification file ' + specPath + ' was given...');
+    } else {
+        specPath = 'gui.yml';
+        logHandler.log('Default specification file gui.yml is used...');
+    }
+    
+    
+    
+    configuration.specification = specPath;    
+    setConfiguration(configuration);
+    console.log('he');
+    specPath = path.resolve('./specification/', specPath);
 
     if (generator.createDirectoryTree('webui/app', [
         'controller',
@@ -255,7 +320,7 @@ exports.generate = function(options) {
         viewportSetup = guiGenerator.processTemplate(specPath);
 
         [
-            'extjs5/Application.js',
+            templateExtDir + '/Application.js',
             'view/Viewport.js'
         ].forEach(function(fileName) {
             generator.processTemplate(viewportSetup, {
@@ -266,7 +331,7 @@ exports.generate = function(options) {
                 });
         });
         [
-            'extjs5/app.js'
+            templateExtDir + '/app.js'
         ].forEach(function(fileName)  {
             generator.processTemplate(viewportSetup, {
                         sourceBaseDir: templatePath,
@@ -313,6 +378,7 @@ exports.start = function (options) {
         devPath = path.resolve('./webui', '');
     
     exitIfNotProjectDir();
+    getConfiguration();
         
     execute('node server.js development ' + devPath + ' without-log', mainDir + '/server', null, true);
     logHandler.log('development host server starting...');
@@ -322,10 +388,10 @@ exports.start = function (options) {
     }
     
     if (watch) {
-        logHandler.log('watching...');
-        fs.watchFile(path.resolve('./specification/gui.yml'), function () { 
-            guitool.generate({force: true});
-            logHandler.log('watching...');
+        logHandler.log('watching ' + configuration.specification + '...');
+        fs.watchFile(path.resolve('./specification/' + configuration.specification), function () { 
+            guitool.generate({force: true, spec: configuration.specification});
+            logHandler.log('watching ' + configuration.specification + '...');
         });
     }
     
@@ -336,14 +402,20 @@ exports.start = function (options) {
             openBrowser(browser, prodUrl);
         }
     }
+    
+    console.log('\nUse ' + '[CTRL + C]'.bold.yellow + ' to exit...\n');
 };
 
 exports.runTest = function (options) {
     var phantomJS = options.run;
     
     if (phantomJS) {
-        // TODO phantom js
-        logHandler.err('phantomJS integration required');
+        try {
+            consoleTest();
+        } catch (err) {
+            logHandler.err(err);
+            process.exit(1);
+        }
     } else {
         openBrowser(null, testUrl); 
         logHandler.log('test page loading...');

@@ -53,6 +53,16 @@ exports.finishLog = function (info) {
     console.log('[DONE]'.bold.green, info.bold, '\n');
 };
 
+exports.warn = function (warn) {
+    var senchaTagBegin = warn.indexOf('[');
+    
+    if (senchaTagBegin > -1) {
+        senchaLogger(warn);
+    } else {
+        console.error('[WRN]'.bold.yellow, warn);
+    }   
+};
+
 exports.err = function (err) {
     var senchaTagBegin = err.indexOf('[');
     
