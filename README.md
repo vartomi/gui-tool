@@ -8,6 +8,8 @@ Do you need a skeleton application or a prototype written in ExtJS? Just create 
   > Supported ExtJS versions:
  - <b>4.x</b> (built in 4.2.1)
  - <b>5.x</b> (built in 5.1.0)
+ 
+[![NPM](https://nodei.co/npm/gui-tool.png?downloads=true&downloadRank=true)](https://nodei.co/npm/gui-tool/)
 
 [Getting Started](#getting-started)<br/>
 [How to specify?](#specification)<br/>
