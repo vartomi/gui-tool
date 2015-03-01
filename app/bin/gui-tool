@@ -48,9 +48,9 @@
 
     program
         .command('run')
-        .description('Run the generated application. Development server will be started')
+        .description('Run the generated application and open it in default browser. Development server will be started')
         .option('-w, --watch', 'regenerate automatically the files if the specification file is changed')
-        .option('-o, --open <browser_name>', 'open the application in given browser')
+        .option('-q, --quiet', 'start the web server(s) without open the browser')
         .option('-p, --prod', 'start another instance of the webserver in production mode')
         .action(function(options){
             programHeader();

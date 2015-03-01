@@ -371,7 +371,7 @@ var openBrowser = function (browser, url) {
 
 exports.start = function (options) {
     var guitool = this,
-        browser = options.open,
+        noBrowser = options.quiet,
         prod = options.prod,
         watch = options.watch,
         prodPath = path.resolve('./webui/build/production/RapidGui', ''),
@@ -383,8 +383,8 @@ exports.start = function (options) {
     execute('node server.js development ' + devPath + ' without-log', mainDir + '/server', null, true);
     logHandler.log('development host server starting...');
     
-    if (browser){
-        openBrowser(browser, devUrl);
+    if (!noBrowser){
+        openBrowser(null, devUrl);
     }
     
     if (watch) {
@@ -398,8 +398,8 @@ exports.start = function (options) {
     if (prod) {
         execute('node server.js production ' + prodPath + ' without-log', mainDir + '/server', null, true);
         logHandler.log('production host server starting...');
-        if (browser) {
-            openBrowser(browser, prodUrl);
+        if (!noBrowser) {
+            openBrowser(null, prodUrl);
         }
     }
     
@@ -416,7 +416,7 @@ exports.runTest = function (options) {
             logHandler.err(err);
             process.exit(1);
         }
-    } else {
+    } else {        
         openBrowser(null, testUrl); 
         logHandler.log('test page loading...');
     }
