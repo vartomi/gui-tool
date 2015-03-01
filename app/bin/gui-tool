@@ -18,6 +18,7 @@
         console.log(' ' + thisPackage.name + ' ' + thisPackage.version + '\n');
     }
     
+    process.bin = process.title = thisPackage.name;
     program._name = thisPackage.name;
     program.version(thisPackage.version);
 

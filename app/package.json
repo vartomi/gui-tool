@@ -21,7 +21,7 @@
     "url": "https://github.com/vartomi/gui-tool"
   },
   "bin": {
-    "gui-tool": "./bin/gui-tool.js"
+    "gui-tool": "./bin/gui-tool"
   },
   "main": "index",
   "dependencies": {
