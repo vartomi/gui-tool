@@ -67,13 +67,15 @@ Before you start it, please check the [requirements](#requirements)!
 
    > The -w or --watch option is just a help for you. In this case you will see in the console `watching...` and when you change the example `gui.yml` specification file the application will be regenerated and refreshed in the opened browser automatically.
 
-   > If you would like to open the application in browser in one step, you can use `-o <browser_name>` option. For example with usage of alias: `$ gui-tool run --open chrome`
+   > If you wouldn't like to open the application in browser in one step, you can use `-q` or `--quiet` option.
    
-   > Not only the development version of the application can be started, but the builded version too. With `-p` or `--prod` flags the tool will start the production server as well. And if the `-o` or `--open` flag is also set with the `<browser_name>`, then the development and the production version of the application will be opened in two different tabs.
+   > Not only the development version of the application can be started, but the builded version too. With `-p` or `--prod` flags the tool will start the production server as well. In this case the development and the production version of the application will be opened in two different tabs.
    
  6. Every application should be tested, therefore gui-tool prepares the environment to test the newly generated ExtJS application with Siesta. The skeleton for the ExtJS components' test is generated with the `generate` command also, we just need to open the test page to check them:
 
     `$ gui-tool test`
+    
+    > With option `-r` or `--run`, the tests can be run in console mode and afterthat a report file will be generated with test results. **Bryntum Siesta Standard required!**
    
 <a name="specification"></a>
 ##**How to specify?**
