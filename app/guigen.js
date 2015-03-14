@@ -50,8 +50,8 @@ var execute = function(command, directory, finishMsg, logging, callback) {
         child.stderr.on('data', function (buf) {
             logHandler.err(buf.replace('\n', ''));
         });
-
-        childs.push({process: child, cmd: directory + '/' + command});
+        
+        childs.push({process: child});
     } catch (err) {
         logHandler.err('child process failed: ' + err);
     }
@@ -422,7 +422,7 @@ exports.runTest = function (options) {
     }
 };
 
-var exitHandler = function () {
+var exitHandler = function (code) {
     var i;
     if (childs.length > 0) {
         logHandler.log('Child processes will be closed');
@@ -433,12 +433,5 @@ var exitHandler = function () {
 };
 
 process.on('exit', exitHandler);
-
-process.on('SIGINT', exitHandler);
-
+process.on('SIGINT', function () { process.exit(0); });
 process.on('uncaughtException', exitHandler);
-
-
-
-
-

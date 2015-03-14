@@ -1,4 +1,5 @@
-var assert = require("assert");
+var assert = require("assert"),
+    exec = require('child_process').exec;
     
 describe('Test demo', function() {
     describe('gui-tool', function() {
