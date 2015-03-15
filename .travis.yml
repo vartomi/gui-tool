@@ -3,12 +3,13 @@ node_js:
   - "0.12"
   - "0.11"
   - "0.10"
+
+env:
+  - SENCHA_CMD_VERSION="5.1.2.52"
   
 before_script:
-  - curl -o sencha-cmd.run.zip http://cdn.sencha.com/cmd/5.1.2.52/SenchaCmd-5.1.2.52-linux.run.zip
-  - unzip -p sencha-cmd.run.zip > sencha-cmd.run
-  - rm sencha-cmd.run.zip
-  - chmod +x sencha-cmd.run
-  - mkdir /tmp/sencha
-  - ./sencha-cmd.run --mode unattended --prefix /tmp/sencha
-  - rm sencha-cmd.run
+  - "wget http://cdn.sencha.com/cmd/$SENCHA_CMD_VERSION/SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run.zip"
+  - "unzip -q SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run.zip"
+  - "chmod +x SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run"
+  - "./SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run --mode unattended"
+  - "export PATH=~/bin/Sencha/Cmd/$SENCHA_CMD_VERSION/:$PATH"
