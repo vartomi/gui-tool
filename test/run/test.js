@@ -60,7 +60,7 @@ describe('gui-tool run (offline|online)', function() {
     });
 
     describe('run application in production mode', function() {
-        this.timeout(5000);
+        this.timeout(10000);
         var serverProcess;
         
         before(function() {
