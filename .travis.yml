@@ -9,5 +9,6 @@ before_script:
   - unzip -p sencha-cmd.run.zip > sencha-cmd.run
   - rm sencha-cmd.run.zip
   - chmod +x sencha-cmd.run
-  - ./sencha-cmd.run --mode text
+  - mkdir /tmp/sencha
+  - ./sencha-cmd.run --mode unattended --prefix /tmp/sencha
   - rm sencha-cmd.run
