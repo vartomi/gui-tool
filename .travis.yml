@@ -13,3 +13,13 @@ before_script:
   - "chmod +x SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run"
   - "./SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run --mode unattended"
   - "export PATH=~/bin/Sencha/Cmd/$SENCHA_CMD_VERSION/:$PATH"
+  - "mkdir sdk"
+  - "wget http://cdn.sencha.com/ext/gpl/ext-5.1.0-gpl.zip"
+  - "unzip -q ext-5.1.0-gpl.zip"
+  - "mv ext-5.1.0-gpl/ext-5.1.0 sdk/extjs
+  - "wget http://www.bryntum.com/download/?product_id=siesta-lite"
+  - "unzip -q siesta-lite-latest"
+  - "mv siesta-lite-latest/* sdk/siesta
+  - "ls sdk"
+  - "ls sdk/extjs
+  - "ls sdk/siesta"

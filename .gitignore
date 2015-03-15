@@ -1,8 +1,7 @@
-nbproject
 /webui/build
 /webui/app
 /webui/.sencha/app/sencha.cfg
 /test/gui
-/app/node_modules
-/app/sdk
-/app/tmp
+/node_modules
+/sdk
+/tmp
