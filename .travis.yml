@@ -5,9 +5,9 @@ node_js:
   - "0.10"
   
 before_script:
-  - curl -o bundle/sencha-cmd.run.zip http://cdn.sencha.com/cmd/5.1.2.52/SenchaCmd-5.1.2.52-linux.run.zip
-  - unzip -p bundle/sencha-cmd.run.zip > bundle/sencha-cmd.run
-  - rm bundle/sencha-cmd.run.zip
-  - chmod +x bundle/sencha-cmd.run
-  - ./bundle/sencha-cmd.run --mode text
-  - rm bundle/sencha-cmd.run
+  - curl -o sencha-cmd.run.zip http://cdn.sencha.com/cmd/5.1.2.52/SenchaCmd-5.1.2.52-linux.run.zip
+  - unzip -p sencha-cmd.run.zip > bundle/sencha-cmd.run
+  - rm sencha-cmd.run.zip
+  - chmod +x sencha-cmd.run
+  - ./sencha-cmd.run --mode text
+  - rm sencha-cmd.run
