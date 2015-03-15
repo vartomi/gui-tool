@@ -50,7 +50,7 @@
   "devDependencies": {},
   "scripts": {
     "testLocal": "mocha -g test",
-    "test": "./node_modules/mocha/bin/mocha -g test"
+    "test": "./node_modules/mocha/bin/mocha -g offline"
   },
   "license": "MIT"
 }
