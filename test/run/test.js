@@ -18,7 +18,7 @@ describe('gui-tool run (offline|online)', function() {
     
     describe('prepare', function() {
         it('should create tmp directory, init and generate project', function(done) {
-            this.timeout(100000);
+            this.timeout(160000);
             fs.mkdir('tmp', function(err) {                
                 if (err) throw err;                
                 exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {

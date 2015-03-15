@@ -49,7 +49,7 @@
   "_from": "gui-tool@",
   "devDependencies": {},
   "scripts": {
-    "testLocal": "mocha -g test",
+    "testLocal": "mocha -g offline",
     "test": "./node_modules/mocha/bin/mocha -g offline"
   },
   "license": "MIT"
