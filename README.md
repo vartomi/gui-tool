@@ -17,6 +17,8 @@ Do you need a skeleton application or a prototype written in ExtJS? Just create 
 [Testing](#testing)<br/>
 [Requirements](#requirements)
 
+####Detailed documentation in [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
+
 ##**Getting Started**
 
 Before you start it, please check the [requirements](#requirements)!

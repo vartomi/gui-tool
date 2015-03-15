@@ -1,4 +1,5 @@
 {
     "node": true,
-    "eqeqeq": true
+    "eqeqeq": true,
+    "mocha": true
 }

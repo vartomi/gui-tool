@@ -70,6 +70,7 @@ io.on('connection', function (socket) {
 // Routes
 server.all("*", accessLogger, restrict);
 
+process.on('exit', function() { server.close(); });
 
 // Start the server to listen
 //server.listen( config.port );

@@ -48,7 +48,8 @@
   "_from": "gui-tool@",
   "devDependencies": {},
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -g offline",
+    "testOnline": "mocha -g online"
   },
   "license": "MIT"
 }

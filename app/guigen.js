@@ -3,6 +3,7 @@ require('child_process');
 
 var http = require('http'),
     exec = require('child_process').exec,
+    spawn = require('child_process').spawn,
     open = require('open'),
     Decompress = require('decompress'),
     generator = require('./lib/generator'),
@@ -23,38 +24,48 @@ var http = require('http'),
 
 var execute = function(command, directory, finishMsg, logging, callback) {
     'use strict';
+    if (!directory) {
+        directory = '.';   
+    }
     var options = {
-            cwd: path.resolve(directory)
-        },
-        child;
-        
+        cwd: path.resolve(directory)
+    },
+    child;    
     try {
-        child = exec(command, options, function(error) {
-            if (error) {
-                logHandler.err(command + '\n' + error.stack);
-            } else {
-                if (finishMsg) {
-                    logHandler.finishLog(finishMsg);
-                }
-                if (callback) {
-                    callback();
-                }
-            }            
-        });
-        if (logging) {
-            child.stdout.on('data', function(buf) {
-                logHandler.log(buf.replace('\n',''));
-            });
+        if (command.args) {
+            child = spawn(command.cmd, command.args, options);
+        } else {  
+            child = exec(command, options, function(error) {
+                if (error) {
+                    logHandler.err(command + '\n' + error.stack);
+                } else {
+                    if (finishMsg) {
+                        logHandler.finishLog(finishMsg);
+                        console.log('stop: ', new Date());
+                    }
+                    if (callback) {
+                        callback();
+                    }
+                }            
+            });   
         }
-
-        child.stderr.on('data', function (buf) {
-            logHandler.err(buf.replace('\n', ''));
-        });
-        
-        childs.push({process: child});
     } catch (err) {
         logHandler.err('child process failed: ' + err);
+    }    
+    
+    if (logging) {
+        child.stdout.on('data', function(buf) {
+            var s = '' + buf;
+            logHandler.log(s.replace('\n',''));
+        });
     }
+
+    child.stderr.on('data', function (buf) {
+        var s = '' + buf;
+        logHandler.err(s.replace('\n', ''));
+    });
+
+    childs.push({process: child});
 };
 
 var getConfiguration = function () {
@@ -124,6 +135,8 @@ exports.init = function(name, options) {
         success = true,
         extZipPath, siestaZipPath;
     
+    console.log('start: ', new Date());
+    
     if (extVersion) {
         switch (extVersion) {
             case "4": extSrc = ext4Src; break;
@@ -160,22 +173,23 @@ exports.init = function(name, options) {
         siestaZipPath = dirName + 'siesta.zip';
         
         logHandler.finishLog('directories created');
-        generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');    
+        generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');  
+
+ 
+        console.log(extjsPath, siestaPath);
         
         try {
             // ExtJS
             if (!extjsPath) {
                 downloadFramework(extSrc, extZipPath, function () {
                     decompressFramework(extZipPath, dirName + 'webui', function () {
-                        execute('mv * ./extSDK', dirName + 'webui', null, null, function () {
+                        execute('mv * ./extSDK', dirName + 'webui', null, null, function() {
                             execute('sencha -sdk ./extSDK generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
                         });                    
                     });  
                 });
             } else {
-                execute('mv ' + extjsPath + ' ./webui/extSDK', null, null, null, function () {
-                    execute('sencha -sdk ./extSDK generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
-                }); 
+                execute('sencha -sdk ' + path.resolve(extjsPath) + ' generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
             }
             
             // Siesta
@@ -186,7 +200,7 @@ exports.init = function(name, options) {
                     });  
                 });  
             } else {
-                execute('mv ' + siestaPath + ' ./test');
+                execute('cp -r ' + siestaPath + ' ./test');
             }
         } catch(err) {
             logHandler.err(err);   
@@ -306,7 +320,6 @@ exports.generate = function(options) {
     
     configuration.specification = specPath;    
     setConfiguration(configuration);
-    console.log('he');
     specPath = path.resolve('./specification/', specPath);
 
     if (generator.createDirectoryTree('webui/app', [
@@ -380,7 +393,7 @@ exports.start = function (options) {
     exitIfNotProjectDir();
     getConfiguration();
         
-    execute('node server.js development ' + devPath + ' without-log', mainDir + '/server', null, true);
+    execute({cmd: 'node', args: ['server.js', 'development', devPath, 'without-log'] }, mainDir + '/server', null, true);
     logHandler.log('development host server starting...');
     
     if (!noBrowser){
@@ -396,7 +409,7 @@ exports.start = function (options) {
     }
     
     if (prod) {
-        execute('node server.js production ' + prodPath + ' without-log', mainDir + '/server', null, true);
+        execute({ cmd: 'node', args: ['server.js', 'production', prodPath, 'without-log'] }, mainDir + '/server', null, true);
         logHandler.log('production host server starting...');
         if (!noBrowser) {
             openBrowser(null, prodUrl);
@@ -422,7 +435,7 @@ exports.runTest = function (options) {
     }
 };
 
-var exitHandler = function (code) {
+var exitHandler = function () {
     var i;
     if (childs.length > 0) {
         logHandler.log('Child processes will be closed');
