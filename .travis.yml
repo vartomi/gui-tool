@@ -5,7 +5,8 @@ node_js:
   - "0.10"
 
 env:
-  - SENCHA_CMD_VERSION="5.1.2.52"
+  - SENCHA_CMD_VERSION="5.1.2.52" EXT_JS="ext-5.1.0"
+  - SENCHA_CMD_VERSION="5.1.2.52" EXT_JS="ext-4.2.1"
   
 before_script:
   - "wget http://cdn.sencha.com/cmd/$SENCHA_CMD_VERSION/SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run.zip"
@@ -14,9 +15,9 @@ before_script:
   - "./SenchaCmd-$SENCHA_CMD_VERSION-linux-x64.run --mode unattended"
   - "export PATH=~/bin/Sencha/Cmd/$SENCHA_CMD_VERSION/:$PATH"
   - "mkdir sdk"
-  - "wget http://cdn.sencha.com/ext/gpl/ext-5.1.0-gpl.zip"
-  - "unzip -q ext-5.1.0-gpl.zip"
-  - "mv ext-5.1.0 sdk/extjs"
+  - "wget http://cdn.sencha.com/ext/gpl/$EXT_JS-gpl.zip"
+  - "unzip -q $EXT_JS-gpl.zip"
+  - "mv $EXT_JS sdk/extjs"
   - "wget http://www.bryntum.com/download/?product_id=siesta-lite -O siesta.zip"
   - "unzip -q siesta.zip"
   - "mv siesta-* sdk/siesta"

@@ -6,6 +6,7 @@ var http = require('http'),
     spawn = require('child_process').spawn,
     open = require('open'),
     Decompress = require('decompress'),
+    PropReader = require('properties-reader'),
     generator = require('./lib/generator'),
     fs = require('fs'),
     beautify = require('js-beautify').js_beautify,
@@ -41,7 +42,6 @@ var execute = function(command, directory, finishMsg, logging, callback) {
                 } else {
                     if (finishMsg) {
                         logHandler.finishLog(finishMsg);
-                        console.log('stop: ', new Date());
                     }
                     if (callback) {
                         callback();
@@ -133,20 +133,18 @@ exports.init = function(name, options) {
         remove = (reset ? true : false),
         directories = ['test', 'specification', 'webui'],
         success = true,
+        extProperties,
         extZipPath, siestaZipPath;
-    
-    console.log('start: ', new Date());
-    
+        
     if (extVersion) {
         switch (extVersion) {
-            case "4": extSrc = ext4Src; break;
-            case "5": extSrc = ext5Src; break;
+            case '4': extSrc = ext4Src; break;
+            case '5': extSrc = ext5Src; break;
             default: logHandler.err('Wrong ExtJS version: ' + extVersion); process.exit(1);
         }
     } else {
-        // ExtJS 5.1.0 the default version
         extSrc = ext5Src;
-        extVersion = "5";
+        extVersion = '5';
     }
     
     if (!dirName) {        
@@ -157,16 +155,7 @@ exports.init = function(name, options) {
     } else {
         success = generator.createDirectoryTree(dirName, directories, remove);        
         dirName += '/';
-    }
-    
-    generator.processTemplate({
-            version: extVersion,
-            specification: 'gui.yml',
-        }, {
-            sourceBaseDir: templatePath + '/guitool',
-            targetBaseDir: './' + dirName,
-            template: 'guitool.json'
-    });
+    }  
             
     if (success) {  
         extZipPath = dirName + 'ext.zip';
@@ -174,10 +163,7 @@ exports.init = function(name, options) {
         
         logHandler.finishLog('directories created');
         generator.copyFile('gui.yml', mainDir + '/generator', dirName + 'specification');  
-
- 
-        console.log(extjsPath, siestaPath);
-        
+         
         try {
             // ExtJS
             if (!extjsPath) {
@@ -190,7 +176,18 @@ exports.init = function(name, options) {
                 });
             } else {
                 execute('sencha -sdk ' + path.resolve(extjsPath) + ' generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
+                extProperties = PropReader(path.resolve(extjsPath) + '/version.properties');
+                extVersion = extProperties.get('version.major');
             }
+            
+            generator.processTemplate({
+                version: extVersion,
+                specification: 'gui.yml',
+            }, {
+                sourceBaseDir: templatePath + '/guitool',
+                targetBaseDir: './' + dirName,
+                template: 'guitool.json'
+            });
             
             // Siesta
             if (!siestaPath) {

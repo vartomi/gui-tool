@@ -2,6 +2,9 @@
 <a href="#"><img src="https://raw.githubusercontent.com/vartomi/gui-tool/master/gui_tool_logo.png" height="40"></a>**GUI-TOOL**
 ----------------------
 
+[![npm version](https://badge.fury.io/js/gui-tool.svg)](http://badge.fury.io/js/gui-tool)
+[![Build Status](https://travis-ci.org/vartomi/gui-tool.svg?branch=master)](https://travis-ci.org/vartomi/gui-tool)
+
 Create ExtJS prototype applications easier and faster.
 -
 
@@ -10,7 +13,7 @@ Do you need a skeleton application or a prototype written in ExtJS? Just create 
  - <b>4.x</b> (built in 4.2.1)
  - <b>5.x</b> (built in 5.1.0)
 
-####Detailed documentation in [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
+<h4>Detailed documentation in</h4> [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
 
 Getting Started
 --
