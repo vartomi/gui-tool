@@ -2,7 +2,8 @@
 <a href="#"><img src="https://raw.githubusercontent.com/vartomi/gui-tool/master/gui_tool_logo.png" height="40"></a>**GUI-TOOL**
 ----------------------
 
-[![NPM](https://nodei.co/npm/gui-tool.png?downloads=true&downloadRank=true)](https://nodei.co/npm/gui-tool/)
+[![npm version](https://badge.fury.io/js/gui-tool.svg)](http://badge.fury.io/js/gui-tool)
+[![Build Status](https://travis-ci.org/vartomi/gui-tool.svg?branch=master)](https://travis-ci.org/vartomi/gui-tool)
 
 ####Create ExtJS prototype applications easier and faster.
 
