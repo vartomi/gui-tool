@@ -4,7 +4,8 @@ var exec = require('child_process').exec,
     spawn = require('child_process').spawn,
     assert = require('assert'),
     fs = require('fs'),
-    http = require('http');
+    http = require('http'),
+    ms_per_min = 1000;
 
 describe('gui-tool run (offline|online)', function() {
     
@@ -18,7 +19,7 @@ describe('gui-tool run (offline|online)', function() {
     
     describe('prepare', function() {
         it('should create tmp directory, init and generate project', function(done) {
-            this.timeout(160000);
+            this.timeout(200 * ms_per_min);
             fs.mkdir('tmp', function(err) {                
                 if (err) throw err;                
                 exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
@@ -35,7 +36,7 @@ describe('gui-tool run (offline|online)', function() {
     });
     
     describe('run application in development mode', function() {
-        this.timeout(5000);
+        this.timeout(20 * ms_per_min);
         var serverProcess;
         
         before(function() {
@@ -60,7 +61,7 @@ describe('gui-tool run (offline|online)', function() {
     });
 
     describe('run application in production mode', function() {
-        this.timeout(10000);
+        this.timeout(20 * ms_per_min);
         var serverProcess;
         
         before(function() {
@@ -86,7 +87,7 @@ describe('gui-tool run (offline|online)', function() {
     
     describe('cleanup', function() {
         it('should remove tmp directory', function(done) {
-            this.timeout(60000);
+            this.timeout(100 * ms_per_min);
             exec('rm -rf tmp', function(err) {
                 if (err) throw err;
                 done();

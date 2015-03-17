@@ -2,7 +2,8 @@
 
 var assert = require('assert'),
     fs = require('fs'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    ms_per_min = 1000;
 
 describe('gui-tool generate (offline|online)', function() {
     
@@ -16,7 +17,7 @@ describe('gui-tool generate (offline|online)', function() {
     
     describe('prepare', function() {
         it('should create tmp directory, init project', function(done) {
-            this.timeout(60000);
+            this.timeout(100 * ms_per_min);
             fs.mkdir('tmp', function(err) {
                 if (err) throw err;
                 exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
@@ -28,7 +29,8 @@ describe('gui-tool generate (offline|online)', function() {
         });
     });
     
-    describe('generate with gui.yml specification file', function() {        
+    describe('generate with gui.yml specification file', function() {     
+        this.timeout(20 * ms_per_min);
         it('should found gui.yml in specification folder', function() {
             fs.existsSync('tmp/specification/gui.yml').should.equal(true); 
         });
@@ -53,7 +55,7 @@ describe('gui-tool generate (offline|online)', function() {
     
     describe('cleanup', function() {
         it('should remove tmp directory', function(done) {
-            this.timeout(60000);
+            this.timeout(100 * ms_per_min);
             exec('rm -rf tmp', function(err) {
                 if (err) throw err;
                 done();

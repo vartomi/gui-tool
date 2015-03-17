@@ -2,7 +2,8 @@
 
 var assert = require('assert'),
     fs = require('fs'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    ms_per_min = 1000;
     
 describe('gui-tool init (offline)', function() {
     describe('exists', function() {
@@ -24,7 +25,7 @@ describe('gui-tool init (offline)', function() {
     
     describe('init project with existing ExtJS and Siesta', function() {
         it('should create gui-tool project in tmp directory', function(done) {
-            this.timeout(60000);
+            this.timeout(100 * ms_per_min);
             exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
                 if (err) throw err;
 //                if (stderr) throw new Error('' + stderr);                
@@ -52,7 +53,7 @@ describe('gui-tool init (offline)', function() {
     
     describe('cleanup', function() {
         it('should remove tmp directory', function(done) {
-            this.timeout(60000);
+            this.timeout(100 * ms_per_min);
             exec('rm -rf tmp', function(err) {
                 if (err) throw err;
                 done();
