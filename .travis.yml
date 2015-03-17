@@ -17,7 +17,7 @@ before_script:
   - "mkdir sdk"
   - "wget http://cdn.sencha.com/ext/gpl/$EXT_JS-gpl.zip"
   - "unzip -q $EXT_JS-gpl.zip"
-  - "mv $EXT_JS sdk/extjs"
+  - "mv $EXT_JS* sdk/extjs"
   - "wget http://www.bryntum.com/download/?product_id=siesta-lite -O siesta.zip"
   - "unzip -q siesta.zip"
   - "mv siesta-* sdk/siesta"
