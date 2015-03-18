@@ -22,3 +22,11 @@ before_script:
   - "wget http://www.bryntum.com/download/?product_id=siesta-lite -O siesta.zip"
   - "unzip -q siesta.zip"
   - "mv siesta-* sdk/siesta"
+
+os:
+  - linux
+  - osx
+  
+matrix:
+  allow_failures:
+    - os: osx
