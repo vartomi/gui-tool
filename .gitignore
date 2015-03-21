@@ -5,3 +5,4 @@
 /node_modules
 /sdk
 /tmp
+/npm_publish.sh
