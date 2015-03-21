@@ -36,7 +36,7 @@ describe('gui-tool run (offline|online)', function() {
     });
     
     describe('run application in development mode', function() {
-        this.timeout(20 * ms_per_min);
+        this.timeout(30 * ms_per_min);
         var serverProcess;
         
         before(function() {
@@ -56,12 +56,12 @@ describe('gui-tool run (offline|online)', function() {
                         }
                     });                
                 req.end(); 
-            }, 2000);
+            }, 4000);
        });
     });
 
     describe('run application in production mode', function() {
-        this.timeout(20 * ms_per_min);
+        this.timeout(30 * ms_per_min);
         var serverProcess;
         
         before(function() {
@@ -81,7 +81,7 @@ describe('gui-tool run (offline|online)', function() {
                         }
                     });                
                 req.end(); 
-            }, 2000);
+            }, 4000);
        });
     });
     
