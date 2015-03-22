@@ -5,6 +5,8 @@
 [![npm version](https://badge.fury.io/js/gui-tool.svg)](http://badge.fury.io/js/gui-tool)
 [![Build Status](https://travis-ci.org/vartomi/gui-tool.svg?branch=master)](https://travis-ci.org/vartomi/gui-tool)
 
+[![](https://img.shields.io/npm/dm/gui-tool.svg)](https://www.npmjs.com/package/gui-tool)
+
 ####Create ExtJS prototype applications easier and faster.
 
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
@@ -107,4 +109,4 @@ See [more](http://www.bryntum.com/docs/siesta/#!/api) in Siesta API document
  - [Sencha Cmd](http://www.sencha.com/products/sencha-cmd/download) (**> v5.1.0.26**)
 
 ##**License**
-[MIT](http://opensource.org/licenses/MIT)
+[![](https://img.shields.io/npm/l/gui-tool.svg)](http://opensource.org/licenses/MIT)
