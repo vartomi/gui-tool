@@ -13,7 +13,6 @@ exports.create = function (view, viewsAndRequires) {
         configObj = {},
         itemsArray = [],
         viewsArray = [],
-        requiresArray = [],
         itemPath,
         com = '\'';
     try {
@@ -61,6 +60,6 @@ exports.create = function (view, viewsAndRequires) {
          viewsAndRequires.views += ',\n';
      }
      viewsAndRequires.views += viewsArray.join(',\n');     
-}
+};
 
 

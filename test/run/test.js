@@ -24,10 +24,14 @@ describe('gui-tool run (offline|online)', function() {
                 if (err) throw err;                
                 exec('node ../bin/gui-tool init TmpApp --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
                     if (err) throw err;
-        //                if (stderr) throw new Error('' + stderr);   
+        //                if (stderr) throw new Error('' + stderr); 
+                    console.log(stdout);
+                    console.log(stderr);
                      exec('node ../bin/gui-tool generate -f -c', { cwd: 'tmp' }, function(err, stdout, stderr) {
                         if (err) throw err;
-        //                if (stderr) throw new Error('' + stderr);                
+        //                if (stderr) throw new Error('' + stderr);  
+                         console.log(stdout);
+                        console.log(stderr);
                         done();
                     });
                 });
@@ -85,7 +89,7 @@ describe('gui-tool run (offline|online)', function() {
        });
     });
     
-    describe('cleanup', function() {
+    /*describe('cleanup', function() {
         it('should remove tmp directory', function(done) {
             this.timeout(100 * ms_per_min);
             exec('rm -rf tmp', function(err) {
@@ -93,5 +97,5 @@ describe('gui-tool run (offline|online)', function() {
                 done();
             });
         });
-    });
+    });*/
 });

@@ -93,7 +93,7 @@ var consoleTest = function () {
     var platform = process.platform,
         reportFile = path.resolve('test/gui/report.json'),
         isWin = /^win/.test(platform),
-        isMac = platform === 'darwin',
+//        isMac = platform === 'darwin',
         isLinux = platform === 'linux';
     
     exitIfNotProjectDir();
@@ -102,6 +102,21 @@ var consoleTest = function () {
     if (isWin) {
         logHandler.log('Run console test in Windows cmd...');
         open('/k cd test/siesta/bin && phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile + ' && exit ', 'cmd', function () {
+            fs.readFile(reportFile, 'utf8', function (err, data) {
+                if (err) {
+                    throw err;
+                }
+                fs.writeFile(reportFile, beautify(data), function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                    logHandler.finishLog('The test report is generated: ' + reportFile);
+                    openBrowser(null, reportFile);
+                });
+            });
+        });
+    } else if (isLinux) {
+        execute('phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile, 'test/siesta/bin', null, null, function() {
             fs.readFile(reportFile, 'utf8', function (err, data) {
                 if (err) {
                     throw err;

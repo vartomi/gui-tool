@@ -6,7 +6,6 @@ var generator = require('../lib/generator'),
     yaml = require('js-yaml'),
     templatePath = path.resolve(__dirname, '../templates'),    
     schemaPath = path.resolve(__dirname, './schema/guiSchema.yml'),
-    targetPath = 'webui/app/',
     senchaCfgPath = 'webui/.sencha/app/',
     specification = require('./specification.js'),
     application = require('./application.js'),
@@ -45,7 +44,7 @@ var createViews = function (layout, staticViews) {
          if (i < layout.length - 1){
              viewsAndRequires.items += '{xtype: \'splitter\'},\n';
          }
-    };  
+    }
     
     staticViews.forEach(function(view) {
         type = view.layout.type;

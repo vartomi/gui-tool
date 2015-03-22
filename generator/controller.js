@@ -19,7 +19,7 @@ var filterFn = function (field, compare) {
             '}';
 };
     
-var filterAnyFn = function (compare) {
+var filterAnyFn = function () {
     return 'function(r, id) {\n' +
                 'var fields = r.fields,\n' +
                 'found = false;\n' + 
@@ -34,15 +34,15 @@ var filterAnyFn = function (compare) {
             '}';
 };
     
-var sorterFn = '';
-var loadFn = '';
+/*var sorterFn = '';
+var loadFn = '';*/
 
 exports.create = function (useCases) {
     var appName = application.getAppName(),
         viewName,
         selector,
-        i,
         obj,
+        itemPath,
         controllersArray = [],
         controllersObjs = {},
         com = '\'';
@@ -51,8 +51,7 @@ exports.create = function (useCases) {
     staticViews = spec.getSpecification().views;
    
     useCases.forEach(function (useCase) {
-        var controlName,
-            control,
+        var control,
             configObj = {controls: '', controlFunctions: ''};
         try {
             viewName = useCase.on.substring(0, useCase.on.indexOf('.'));
@@ -96,7 +95,7 @@ exports.create = function (useCases) {
     }
         
        return controllersArray.join(',\n');
-}
+};
 
 var addControl = function (selector, type) {
     var control,
@@ -161,8 +160,8 @@ var addControl = function (selector, type) {
         controlString: control,
         name: controlName,
         parameterString: params
-    }
-}
+    };
+};
 
 var addFunction = function (controlName, controlDo, fnParams) {
     var controlFunction = '',
@@ -174,7 +173,8 @@ var addFunction = function (controlName, controlDo, fnParams) {
         checkboxFiltering,
         command,
         elementString,
-        foreginKey;
+        foreginKey,
+        i, len;
 
     controlFunction += controlName + ': function' + fnParams + ' {\n';
     
@@ -222,7 +222,7 @@ var addFunction = function (controlName, controlDo, fnParams) {
                     if (controlName.toLowerCase().indexOf('chk') > -1 ||
                         controlName.toLowerCase().indexOf('checkbox') > -1) {
                         controlFunction += 'if (newValue) {\n';    
-                        for(i = 0; i < staticViews.length; i++) {
+                        for(i = 0, len = staticViews.length; i < len; i++) {
                             if (selector[1] === staticViews[i].alias) {
                                 dataContent = staticViews[i].dataContent;
                                 filter = dataContent.filter;
@@ -239,7 +239,7 @@ var addFunction = function (controlName, controlDo, fnParams) {
                         command = command.replace('{param}', filterAnyFn('newValue'));
                     } else {
                         checkboxFiltering = false;
-                        for(i = 0; i < models.length; i++) {
+                        for(i = 0, len = models.length; i < len; i++) {
                             if (xtype === 'grid' && selector[1].replace('list', '') === models[i].name.toLowerCase()) {
 
                                 if (models[i].has && models[i].has[0]) {
@@ -256,7 +256,7 @@ var addFunction = function (controlName, controlDo, fnParams) {
                     controlFunction += elementString + '.' + command + ';\n';
                 } else {
                     elementString += 'Ext.getCmp(\'viewport\')';
-                    elementString += '.down(\'' + selector[1] + '\')'
+                    elementString += '.down(\'' + selector[1] + '\')';
                     controlFunction += elementString + '.' + command + ';\n'; 
                 }       
                 
@@ -274,6 +274,6 @@ var addFunction = function (controlName, controlDo, fnParams) {
     controlFunction += '}\n';
      
     return controlFunction;
-}
+};
 
 

@@ -33,6 +33,7 @@
     "jayschema": "0.3.1",
     "js-beautify": "1.5.1",
     "js-yaml": "3.2.5",
+    "jshint": "^2.6.3",
     "mocha": "^2.2.1",
     "mu2": "0.5.20",
     "open": "0.0.5",
@@ -51,7 +52,8 @@
   "devDependencies": {},
   "scripts": {
     "testLocal": "mocha -g offline",
-    "test": "./node_modules/mocha/bin/mocha -g offline"
+    "test": "./node_modules/.bin/jshint . --reporter=utils/reporter.js && ./node_modules/mocha/bin/mocha -g offline",
+    "lint": "./node_modules/.bin/jshint ."
   },
   "license": "MIT"
 }
