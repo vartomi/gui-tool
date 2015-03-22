@@ -20,7 +20,7 @@ describe('gui-tool generate (offline|online)', function() {
             this.timeout(100 * ms_per_min);
             fs.mkdir('tmp', function(err) {
                 if (err) throw err;
-                exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
+                exec('node ../bin/gui-tool init TmpApp --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
                     if (err) throw err;
     //                if (stderr) throw new Error('' + stderr);                
                     done();
@@ -56,7 +56,7 @@ describe('gui-tool generate (offline|online)', function() {
     describe('generate and compile with gui.yml specification file', function() {     
         this.timeout(100 * ms_per_min);
         it('should not found build folder', function() {
-            fs.existsSync('tmp/webui/build/production').should.equal(false); 
+            fs.existsSync('tmp/webui/build/production/TmpApp').should.equal(false); 
         });
         
         it('should generate and compile application sources', function(done) {
@@ -77,7 +77,7 @@ describe('gui-tool generate (offline|online)', function() {
         });
         
         it('should found compiled files', function() {
-            fs.existsSync('tmp/webui/build/production').should.equal(true); 
+            fs.existsSync('tmp/webui/build/production/TmpApp').should.equal(true); 
         });
     });  
     

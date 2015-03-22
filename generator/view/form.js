@@ -4,40 +4,42 @@ var generator = require('../../lib/generator'),
     templatePath = path.resolve(__dirname, '../../templates'),
     targetPath = 'webui/app/',
     spec = require('../specification.js'),
-    models,
-    extPath = 'RapidGui.';
+    application = require('../application.js'),
+    models;
 
 exports.create = function (view, viewsAndRequires) {
-   var content = view.content,
-       buttons = view.buttons,
-       dataContent = view.dataContent,
-       configObj = {},
-       itemsArray = [],
-       buttonsArray = [],
-       viewsArray = [],
-       requiresArray = [],
-       itemPath,
-       com = '\'';
+    var appName = application.getAppName(),
+        content = view.content,
+        buttons = view.buttons,
+        dataContent = view.dataContent,
+        configObj = {},
+        itemsArray = [],
+        buttonsArray = [],
+        viewsArray = [],
+        requiresArray = [],
+        itemPath,
+        com = '\'';
     
     models = spec.getSpecification().models;
     try {
+        configObj.appName = appName;
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
         configObj.title = view.layout.title;
 
         if (!content) {
-            throw new Error('Missing contents for form \'' + view.name + '\'')
+            throw new Error('Missing contents for form \'' + view.name + '\'');
         }
         
         content.forEach(function (el){
            if (el.layout.type === 'text') {
                itemsArray.push('{xtype: ' + com + 'textfield' + com + ', ' +
                        'fieldLabel: ' + com + el.name + com + '}');
-            } else if (el.layout.type == 'password') {
+           } else if (el.layout.type === 'password') {
                 itemsArray.push('{xtype: ' + com + 'textfield' + com + ', ' +
                         'fieldLabel: ' + com + el.name + com + ',' +
                         'inputType: ' + com + el.type + com + '}'
-                        )
+                        );
             }
         });
                 
@@ -67,7 +69,7 @@ exports.create = function (view, viewsAndRequires) {
             fileName: view.name + '.js'
      });
      
-     itemPath = com + extPath + 'view.' + view.name + com;
+     itemPath = com + appName + '.view.' + view.name + com;
      logHandler.itemLog(itemPath);
      viewsArray.push(itemPath);
      
@@ -86,24 +88,27 @@ exports.create = function (view, viewsAndRequires) {
         }
      }
      viewsAndRequires.requires += requiresArray.join(',\n'); 
-}
+};
 
 var createFields = function (model) {
-    var i,
+    var i, j,
         label,
         fieldtype,
+        field,
         items = [],
         com = '\'';
     
     for(i = 0; i < models.length; i++) {
         if (models[i].name === model) {
-            models[i].fields.forEach(function (field) {
+            for (j = 0; j < models[i].fields.length; j++) {
+                field = models[i].fields[j];
                 label = field[0].toUpperCase() + field.substring(1, field.length);
                 items.push('{xtype: ' + com + 'textfield' + com + ', ' +
                         'name: ' + com + field + com + ', ' +
                        'fieldLabel: ' + com + label + com + '}');
-            });
-            models[i].typedFields.forEach(function (field) {
+            }
+            for (j = 0; j <  models[i].typedFields.length; j++) {
+                field = models[i].typedFields[j];
                 label = field.name[0].toUpperCase() + field.name.substring(1, field.name.length);
                 if (field.type === 'date') {
                     fieldtype = 'datefield';
@@ -115,11 +120,11 @@ var createFields = function (model) {
                 items.push('{xtype: ' + com + fieldtype + com + ', ' +
                         'name: ' + com + field.name + com + ', ' +
                        'fieldLabel: ' + com + label + com + '}');
-            });
+            }
             
             break;
         }
     }
     return items;
-}
+};
 

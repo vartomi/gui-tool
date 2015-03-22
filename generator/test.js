@@ -4,10 +4,12 @@
 var generator = require('../lib/generator'),  
     path = require('path'),
     templatePath = path.resolve(__dirname, '../templates/'),
+    application = require('./application.js'),
     testPath = 'test';
     
 exports.createTests = function (viewportSetup) {
-    var urlsArray = [],
+    var appName = application.getAppName(),
+        urlsArray = [],
         files = [{
             template: 'ViewTestTemplate.js',
             url: 'view/view.t.js'
@@ -34,6 +36,7 @@ exports.createTests = function (viewportSetup) {
     }
     
     viewportSetup.testUrls = urlsArray.join(',\n');
+    viewportSetup.appName = appName;
     
     [
         'index.js'

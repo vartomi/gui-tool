@@ -6,16 +6,15 @@ var generator = require('../lib/generator'),
     yaml = require('js-yaml'),
     templatePath = path.resolve(__dirname, '../templates'),    
     schemaPath = path.resolve(__dirname, './schema/guiSchema.yml'),
-    targetPath = 'webui/app/',
     senchaCfgPath = 'webui/.sencha/app/',
-    extPath = 'RapidGui.',
     specification = require('./specification.js'),
-    guiSpec,
+    application = require('./application.js'),
     modelGenerator = require('./modelWithStore.js'),
     gridGenerator = require('./view/grid.js'),
     windowGenerator = require('./view/window.js'),
     formGenerator = require('./view/form.js'),
-    controllerGenerator = require('./controller.js');
+    controllerGenerator = require('./controller.js'),    
+    guiSpec;
 
 var createViews = function (layout, staticViews) {
     var type,
@@ -45,7 +44,7 @@ var createViews = function (layout, staticViews) {
          if (i < layout.length - 1){
              viewsAndRequires.items += '{xtype: \'splitter\'},\n';
          }
-    };  
+    }
     
     staticViews.forEach(function(view) {
         type = view.layout.type;
@@ -65,18 +64,19 @@ var createViews = function (layout, staticViews) {
     
     
     return viewsAndRequires;
-}
+};
 
-exports.processTemplate = function (specPath) {
+exports.processTemplate = function (specPath, appName) {
     guiSpec = yaml.load(fs.readFileSync(specPath));
     specification.setSpecification(guiSpec);
+    application.setAppName(appName);
     var staticViews = guiSpec.views,
         models = guiSpec.models,
         useCases = guiSpec.useCases,
         layout = guiSpec.layout,
         theme = guiSpec.extTheme,
         modelsAndStores, viewsAndRequires,
-        schemaErrors = [];
+        schemaErrors = [],
         viewportSetup = {};
 
     schemaErrors = schema.validate(guiSpec, schemaPath);
@@ -87,7 +87,7 @@ exports.processTemplate = function (specPath) {
         logHandler.finishLog('Specification schema validated');
     }
     
-    generator.processTemplate({theme: theme},{
+    generator.processTemplate({appName: appName, theme: theme},{
         sourceBaseDir: templatePath + '/sencha',
         targetBaseDir: senchaCfgPath,
         template: 'sencha.cfg'
@@ -108,7 +108,9 @@ exports.processTemplate = function (specPath) {
 
     viewportSetup.controllers = controllerGenerator.create(useCases);
     
+    viewportSetup.appName = appName;
+    
     return viewportSetup;
-}
+};
 
 

@@ -7,7 +7,7 @@ var yaml = require( 'js-yaml' ),
     fs = require('fs');
 
 // Load the should module for validation
-var should = require( 'should' );
+require( 'should' );
 
 var configFile = {};
 var parameters = {};
@@ -17,20 +17,20 @@ var loadConfiguration = function( configFileName ) {
     // Load the YAML format config file
     configFile = yaml.load(fs.readFileSync(configFileName));
 
-    configFile.should.be.an.Object;
+    configFile.should.be.an.instanceOf(Object);
     configFile.should.have.property( 'useEnvironment' );
     configFile.should.have.property( 'environments' );
-    configFile.environments.should.be.an.Object;
+    configFile.environments.should.be.an.instanceOf(Object);
     configFile.environments.should.have.property( 'default' );
     // configFile.environments[ 'default' ].useEnvironment = configFile.useEnvironment || "default";
 
-    setEnvironment( configFile.useEnvironment )
+    setEnvironment( configFile.useEnvironment );
     return parameters;
-}
+};
 
 var setEnvironment = function ( environment ) {
 
-    if( environment != null &&
+    if( environment !== null &&
         configFile.environments[ environment ].should.be.an.Object ) {
         // Process default values combined with
         // the parameters of the selected environment
@@ -45,7 +45,7 @@ var setEnvironment = function ( environment ) {
         console.log('ERROR: Wrong environment "' + environment + '"');
     }
     return parameters;
-}
+};
 
 // Set the config parameters to the default environment
 var parameters = loadConfiguration(__dirname + '/config.yml');

@@ -1,4 +1,4 @@
-Ext.define('RapidGui.model.{{definePath}}', {
+Ext.define('{{appName}}.model.{{definePath}}', {
    extend: 'Ext.data.Model', 
    
    fields: [

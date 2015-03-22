@@ -5,17 +5,18 @@ var generator = require('../../lib/generator'),
     gridGenerator = require('./grid.js'),
     templatePath = path.resolve(__dirname, '../../templates'),
     targetPath = 'webui/app/',
-    extPath = 'RapidGui.';
+    application = require('../application.js');
 
 exports.create = function (view, viewsAndRequires) {
-    var content = view.content,
+    var appName = application.getAppName(),
+        content = view.content,
         configObj = {},
         itemsArray = [],
         viewsArray = [],
-        requiresArray = [],
         itemPath,
         com = '\'';
     try {
+        configObj.appName = appName;
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
         configObj.title = view.layout.title;
@@ -49,7 +50,7 @@ exports.create = function (view, viewsAndRequires) {
      });
      
      
-     itemPath = com + extPath + 'view.' + view.name + com;
+     itemPath = com + appName + '.view.' + view.name + com;
      logHandler.itemLog(itemPath);
      viewsArray.push(itemPath);
      
@@ -59,6 +60,6 @@ exports.create = function (view, viewsAndRequires) {
          viewsAndRequires.views += ',\n';
      }
      viewsAndRequires.views += viewsArray.join(',\n');     
-}
+};
 
 

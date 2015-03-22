@@ -31,7 +31,7 @@ exports.cmdToExtJSFunc = {
     clear: {
         grid: 'store.clearFilter()'
     }
-}
+};
 
 exports.typeToExtJSEvent = {
     click: {
@@ -48,6 +48,6 @@ exports.typeToExtJSEvent = {
     type: {
         textfield: 'change(me, newValue)'
     }
-}
+};
 
 

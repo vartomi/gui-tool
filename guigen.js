@@ -80,6 +80,7 @@ var setConfiguration = function (obj) {
     generator.processTemplate({
             version: obj.extjsversion,
             specification: obj.specification,
+            appname: obj.appname
         }, {
             sourceBaseDir: templatePath + '/guitool',
             targetBaseDir: '.',
@@ -92,7 +93,7 @@ var consoleTest = function () {
     var platform = process.platform,
         reportFile = path.resolve('test/gui/report.json'),
         isWin = /^win/.test(platform),
-        isMac = platform === 'darwin',
+//        isMac = platform === 'darwin',
         isLinux = platform === 'linux';
     
     exitIfNotProjectDir();
@@ -114,18 +115,34 @@ var consoleTest = function () {
                 });
             });
         });
+    } else if (isLinux) {
+        execute('phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile, 'test/siesta/bin', null, null, function() {
+            fs.readFile(reportFile, 'utf8', function (err, data) {
+                if (err) {
+                    throw err;
+                }
+                fs.writeFile(reportFile, beautify(data), function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                    logHandler.finishLog('The test report is generated: ' + reportFile);
+                    openBrowser(null, reportFile);
+                });
+            });
+        });
     } else {
         logHandler.log('Run console test...');
         logHandler.warn('OS might be not supported!');
     }
 };
 
-exports.init = function(name, options) {
+exports.init = function(name, dir, options) {
     var reset = options.reset,
         extjsPath = options.extjs,
         siestaPath = options.siesta,
         extVersion = options.extversion,
-        dirName = name,
+        appName = name,
+        dirName = dir,
         ext4Src = 'http://cdn.sencha.com/ext/gpl/ext-4.2.1-gpl.zip',
         ext5Src = 'http://cdn.sencha.com/ext/gpl/ext-5.1.0-gpl.zip',
         extSrc,
@@ -135,7 +152,7 @@ exports.init = function(name, options) {
         success = true,
         extProperties,
         extZipPath, siestaZipPath;
-        
+            
     if (extVersion) {
         switch (extVersion) {
             case '4': extSrc = ext4Src; break;
@@ -148,8 +165,8 @@ exports.init = function(name, options) {
     }
     
     if (!dirName) {        
-        directories.forEach(function (dir) {
-            success = success && generator.createDirectoryTree(dir, [], remove);
+        directories.forEach(function (directory) {
+            success = success && generator.createDirectoryTree(directory, [], remove);
         }); 
         dirName = '';        
     } else {
@@ -170,12 +187,12 @@ exports.init = function(name, options) {
                 downloadFramework(extSrc, extZipPath, function () {
                     decompressFramework(extZipPath, dirName + 'webui', function () {
                         execute('mv * ./extSDK', dirName + 'webui', null, null, function() {
-                            execute('sencha -sdk ./extSDK generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
+                            execute('sencha -sdk ./extSDK generate app ' + appName + ' .', dirName + 'webui', 'gui-tool project initialized', true);  
                         });                    
                     });  
                 });
             } else {
-                execute('sencha -sdk ' + path.resolve(extjsPath) + ' generate app RapidGui .', dirName + 'webui', 'gui-tool project initialized', true);  
+                execute('sencha -sdk ' + path.resolve(extjsPath) + ' generate app ' + appName + ' .', dirName + 'webui', 'gui-tool project initialized', true);  
                 extProperties = PropReader(path.resolve(extjsPath) + '/version.properties');
                 extVersion = extProperties.get('version.major');
             }
@@ -183,6 +200,7 @@ exports.init = function(name, options) {
             generator.processTemplate({
                 version: extVersion,
                 specification: 'gui.yml',
+                appname: appName
             }, {
                 sourceBaseDir: templatePath + '/guitool',
                 targetBaseDir: './' + dirName,
@@ -289,7 +307,7 @@ exports.generate = function(options) {
         forceRemove = options.force,
         specPath = options.spec,
         templateExtDir = 'extjs',
-        extVersion, viewportSetup;
+        extVersion, viewportSetup, appName;
     
     exitIfNotProjectDir();
     exitIfNotInitializedProject();
@@ -301,10 +319,12 @@ exports.generate = function(options) {
         process.exit(1);
     }
     
-    extVersion = configuration.extjsversion;   
+    extVersion = configuration.extjsversion;  
     templateExtDir += extVersion;
+    
+    appName = configuration.appname;
 
-    logHandler.log('generating basic ExtJS ' + extVersion + ' files...');
+    logHandler.log('generating basic ExtJS ' + extVersion + ' files for ' + appName + '...');
 
     if (specPath){
         logHandler.log('Specification file ' + specPath + ' was given...');
@@ -327,7 +347,7 @@ exports.generate = function(options) {
     ], (forceRemove ? true : false))) {
         logHandler.finishLog('ExtJS hierarchy created');
 
-        viewportSetup = guiGenerator.processTemplate(specPath);
+        viewportSetup = guiGenerator.processTemplate(specPath, appName);
 
         [
             templateExtDir + '/Application.js',
@@ -384,12 +404,14 @@ exports.start = function (options) {
         noBrowser = options.quiet,
         prod = options.prod,
         watch = options.watch,
-        prodPath = path.resolve('./webui/build/production/RapidGui', ''),
-        devPath = path.resolve('./webui', '');
+        devPath = path.resolve('./webui', ''),
+        prodPath;
     
     exitIfNotProjectDir();
     getConfiguration();
         
+    prodPath = path.resolve('./webui/build/production/' + configuration.appname, '');
+    
     execute({cmd: 'node', args: ['server.js', 'development', devPath, 'without-log'] }, mainDir + '/server', null, true);
     logHandler.log('development host server starting...');
     

@@ -3,7 +3,7 @@ var generator = require('../lib/generator'),
     logHandler = require('../loghandler.js'),
     templatePath = path.resolve(__dirname, '../templates'),
     targetPath = 'webui/app/',
-    extPath = 'RapidGui.',
+    application = require('./application.js'),
     proxyTpl = '\nproxy: {\
         type: \'ajax\',\
         reader: {\
@@ -14,7 +14,8 @@ var generator = require('../lib/generator'),
     },\n';    
 
 exports.createStoresWithModels = function (models) {
-    var modelName,
+    var appName = application.getAppName(),
+        modelName,
         storeName,
         modelPath,
         storePath,
@@ -32,9 +33,9 @@ exports.createStoresWithModels = function (models) {
 
         models.forEach(function (model) {
             modelName = model.name;
-            modelPath = extPath + 'model.' + modelName;
+            modelPath = appName + '.model.' + modelName;
             storeName = modelName + 's';
-            storePath = extPath + 'store.' + storeName;
+            storePath = appName + '.store.' + storeName;
             
             proxy = model.proxy.split(':');
             if (proxy[0] === 'mock') {
@@ -47,6 +48,7 @@ exports.createStoresWithModels = function (models) {
             // Store generating
             generator.processTemplate(
             {
+                appName: appName,
                 definePath: storeName,
                 model: modelPath,
                 proxy: proxy ? proxyTpl : '',
@@ -90,6 +92,7 @@ exports.createStoresWithModels = function (models) {
 
             generator.processTemplate(
             {
+                appName: appName,
                 definePath: modelName,
                 fields: fieldsString
             }, {

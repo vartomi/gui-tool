@@ -5,9 +5,9 @@
 */
 
 Ext.application({
-    name: 'RapidGui',
+    name: '{{appName}}',
 
-    extend: 'RapidGui.Application',
+    extend: '{{appName}}.Application',
     
     autoCreateViewport: true
 });

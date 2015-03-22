@@ -1,14 +1,14 @@
 var generator = require('../../lib/generator'),
     path = require('path'),
     logHandler = require('../../loghandler.js'),
-    formGenerator = require('./form.js'),
     spec = require('../specification.js'),
     templatePath = path.resolve(__dirname, '../../templates'),
     targetPath = 'webui/app/',
-    extPath = 'RapidGui.';
+    application = require('../application.js');
 
 exports.create = function (view, viewsAndRequires) {
-    var content = view.dataContent,
+    var appName = application.getAppName(),
+        content = view.dataContent,
         buttons = view.buttons,
         models = spec.getSpecification().models,
         configObj = {},
@@ -22,6 +22,7 @@ exports.create = function (view, viewsAndRequires) {
         itemPath,
         com = '\'';
     try {
+        configObj.appName = appName;
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
         configObj.title = view.layout.title || view.name;   
@@ -33,7 +34,7 @@ exports.create = function (view, viewsAndRequires) {
             throw new Error('Missing data content for grid \'' + view.name + '\'');
         }
         
-        configObj.store = extPath + 'store.' + content.model + 's'
+        configObj.store = appName + '.store.' + content.model + 's';
         
         if(content.edit) {            
             editor = 'editor: ';
@@ -54,7 +55,7 @@ exports.create = function (view, viewsAndRequires) {
 
         models.forEach(function (model) {
            if (model.name === content.model){
-               for(var i = 0; i<model.fields.length; i++){
+               for(i = 0; i<model.fields.length; i++){
                    columnsArray.push(
                        '{text: ' + com + model.fields[i] + com + ', ' +
                        'dataIndex:' + com + model.fields[i] + com + ', ' +
@@ -62,7 +63,7 @@ exports.create = function (view, viewsAndRequires) {
                        'flex: 1}'
                         );
                }
-               for(var i = 0; i<model.typedFields.length; i++){
+               for(i = 0; i<model.typedFields.length; i++){
                    if (model.typedFields[i].type === 'date') {
                         fieldtype = 'datefield';
                         requiresArray.push('\'Ext.form.field.Date\'');
@@ -109,8 +110,8 @@ exports.create = function (view, viewsAndRequires) {
                             'text: \'' + filter.field + ':\'},\n';
                     for(i = 0; i < filter.items.length; i++) {
                         configObj.optionalConfig += '{xtype: \'checkbox\',\n' +
-                                'itemId: \'' + filter.items[i] + '.' + filter.field
-                                + '\',\n' + 
+                                'itemId: \'' + filter.items[i] + '.' + filter.field + 
+                                '\',\n' + 
                                 'boxLabel: \'' + filter.items[i] + '\'},\n';
                     }
                     requiresArray.push('\'Ext.form.field.Checkbox\'');
@@ -137,7 +138,7 @@ exports.create = function (view, viewsAndRequires) {
      });
      
      
-     itemPath = com + extPath + 'view.' + view.name + com;
+     itemPath = com + appName + '.view.' + view.name + com;
      logHandler.itemLog(itemPath);
      viewsArray.push(itemPath);
      
@@ -156,7 +157,7 @@ exports.create = function (view, viewsAndRequires) {
             }
         }
         viewsAndRequires.requires += requiresArray.join(',\n');
-}
+};
 
 
 

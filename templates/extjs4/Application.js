@@ -7,8 +7,8 @@ Ext.Loader.injectScriptElement('https://cdn.socket.io/socket.io-1.3.4.js', funct
     });
 });
 //--------------------------------------//
-Ext.define('RapidGui.Application', {
-    name: 'RapidGui',
+Ext.define('{{appName}}.Application', {
+    name: '{{appName}}',
     extend: 'Ext.app.Application',
     requires: [
         {{appRequires}}
