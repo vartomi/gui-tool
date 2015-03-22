@@ -137,7 +137,7 @@ exports.init = function(name, dir, options) {
         success = true,
         extProperties,
         extZipPath, siestaZipPath;
-        
+            
     if (extVersion) {
         switch (extVersion) {
             case '4': extSrc = ext4Src; break;
@@ -150,8 +150,8 @@ exports.init = function(name, dir, options) {
     }
     
     if (!dirName) {        
-        directories.forEach(function (dir) {
-            success = success && generator.createDirectoryTree(dir, [], remove);
+        directories.forEach(function (directory) {
+            success = success && generator.createDirectoryTree(directory, [], remove);
         }); 
         dirName = '';        
     } else {
@@ -185,7 +185,7 @@ exports.init = function(name, dir, options) {
             generator.processTemplate({
                 version: extVersion,
                 specification: 'gui.yml',
-                appName: appName
+                appname: appName
             }, {
                 sourceBaseDir: templatePath + '/guitool',
                 targetBaseDir: './' + dirName,
