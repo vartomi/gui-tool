@@ -3,7 +3,7 @@ var generator = require('../lib/generator'),
     logHandler = require('../loghandler.js'),
     templatePath = path.resolve(__dirname, '../templates'),
     targetPath = 'webui/app/',
-    extPath = 'RapidGui.',
+    application = require('./application.js'),
     spec = require('./specification.js'),
     models,
     staticViews,
@@ -17,7 +17,7 @@ var filterFn = function (field, compare) {
                     'return true;\n' +
                 '}\n' +
             '}';
-    }
+};
     
 var filterAnyFn = function (compare) {
     return 'function(r, id) {\n' +
@@ -32,13 +32,14 @@ var filterAnyFn = function (compare) {
                     'return true;\n' +
                 '}\n' +
             '}';
-}
+};
     
 var sorterFn = '';
 var loadFn = '';
 
 exports.create = function (useCases) {
-    var viewName,
+    var appName = application.getAppName(),
+        viewName,
         selector,
         i,
         obj,
@@ -49,31 +50,31 @@ exports.create = function (useCases) {
     models = spec.getSpecification().models;
     staticViews = spec.getSpecification().views;
    
-        useCases.forEach(function (useCase) {
-            var controlName,
-                control,
-                configObj = {controls: '', controlFunctions: ''};
-            try {
-                viewName = useCase.on.substring(0, useCase.on.indexOf('.'));
-                
-                if (!viewName) {
-                    viewName = useCase.on;
-                }
-                viewName = viewName[0].toUpperCase() + viewName.substring(1, viewName.length);
-                                
-                selector = useCase.on.split('.');
-                selector = selector.join(' ');
-                
-                if (!controllersObjs[viewName]) {  
-                    controllersObjs[viewName] = configObj;
-                    controllersObjs[viewName].definePath = viewName;
-                } 
-                    control = addControl(selector, useCase.type);
-                    
-                    controllersObjs[viewName].controls += control.controlString + ',\n';
-                    
-                    controllersObjs[viewName].controlFunctions += addFunction(control.name, useCase.do, control.parameterString) + ',\n';
-                
+    useCases.forEach(function (useCase) {
+        var controlName,
+            control,
+            configObj = {controls: '', controlFunctions: ''};
+        try {
+            viewName = useCase.on.substring(0, useCase.on.indexOf('.'));
+
+            if (!viewName) {
+                viewName = useCase.on;
+            }
+            viewName = viewName[0].toUpperCase() + viewName.substring(1, viewName.length);
+
+            selector = useCase.on.split('.');
+            selector = selector.join(' ');
+
+            if (!controllersObjs[viewName]) {  
+                controllersObjs[viewName] = configObj;
+                controllersObjs[viewName].definePath = viewName;
+            } 
+            control = addControl(selector, useCase.type);
+
+            controllersObjs[viewName].appName = appName;
+            controllersObjs[viewName].controls += control.controlString + ',\n';
+            controllersObjs[viewName].controlFunctions += addFunction(control.name, useCase.do, control.parameterString) + ',\n';
+
         } catch (e) {
             logHandler.error(e);    
         }  
@@ -89,7 +90,7 @@ exports.create = function (useCases) {
             fileName: i + '.js'
         });
 
-        itemPath = com + extPath + 'controller.' + i + com;
+        itemPath = com + appName + '.controller.' + i + com;
         logHandler.itemLog(itemPath);
         controllersArray.push(itemPath);
     }

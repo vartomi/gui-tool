@@ -9,7 +9,7 @@ describe('gui-tool init (offline)', function() {
     describe('exists', function() {
         it('should return help of gui-tool init', function() {
             exec('node bin/gui-tool init --help', function (err, stdout) {
-                assert.equal(true, stdout.indexOf('Usage: init [options] [name]') > -1);
+                assert.equal(true, stdout.indexOf('Usage: init [options] <name> [dir]') > -1);
             });
         });
     });
@@ -26,7 +26,7 @@ describe('gui-tool init (offline)', function() {
     describe('init project with existing ExtJS and Siesta', function() {
         it('should create gui-tool project in tmp directory', function(done) {
             this.timeout(100 * ms_per_min);
-            exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
+            exec('node ../bin/gui-tool init TmpApp --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
                 if (err) throw err;
 //                if (stderr) throw new Error('' + stderr);                
                 done();
@@ -65,7 +65,7 @@ describe('gui-tool init (offline)', function() {
         
         it('should create gui-tool project in tmp directory', function(done) {
             this.timeout(80 * ms_per_min);
-            exec('node ../bin/gui-tool init -r --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
+            exec('node ../bin/gui-tool init -r TmpApp --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
                 if (err) throw err;
 //                if (stderr) throw new Error('' + stderr);   
                 done();

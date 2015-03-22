@@ -1,4 +1,4 @@
-Ext.define('RapidGui.view.{{definePath}}',{
+Ext.define('{{appName}}.view.{{definePath}}',{
     extend: 'Ext.form.Panel',
     alias: 'widget.{{xtype}}',
     collapsible: true,

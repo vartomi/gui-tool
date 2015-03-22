@@ -4,11 +4,11 @@
  * Sencha Cmd when upgrading.
  */
 Ext.application({
-    name: 'RapidGui',
+    name: '{{appName}}',
 
-    extend: 'RapidGui.Application',
+    extend: '{{appName}}.Application',
     
-    autoCreateViewport: 'RapidGui.view.Viewport'
+    autoCreateViewport: '{{appName}}.view.Viewport'
 	
     //-------------------------------------------------------------------------
     // Most customizations should be made to RapidGui.Application. If you need to

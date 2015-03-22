@@ -1,4 +1,4 @@
-Ext.define('RapidGui.view.Viewport', {
+Ext.define('{{appName}}.view.Viewport', {
     id: 'viewport',
     requires:[
         'Ext.layout.container.Border',

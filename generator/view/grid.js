@@ -5,10 +5,11 @@ var generator = require('../../lib/generator'),
     spec = require('../specification.js'),
     templatePath = path.resolve(__dirname, '../../templates'),
     targetPath = 'webui/app/',
-    extPath = 'RapidGui.';
+    application = require('../application.js');
 
 exports.create = function (view, viewsAndRequires) {
-    var content = view.dataContent,
+    var appName = application.getAppName(),
+        content = view.dataContent,
         buttons = view.buttons,
         models = spec.getSpecification().models,
         configObj = {},
@@ -22,6 +23,7 @@ exports.create = function (view, viewsAndRequires) {
         itemPath,
         com = '\'';
     try {
+        configObj.appName = appName;
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
         configObj.title = view.layout.title || view.name;   
@@ -33,7 +35,7 @@ exports.create = function (view, viewsAndRequires) {
             throw new Error('Missing data content for grid \'' + view.name + '\'');
         }
         
-        configObj.store = extPath + 'store.' + content.model + 's'
+        configObj.store = appName + '.store.' + content.model + 's'
         
         if(content.edit) {            
             editor = 'editor: ';
@@ -137,7 +139,7 @@ exports.create = function (view, viewsAndRequires) {
      });
      
      
-     itemPath = com + extPath + 'view.' + view.name + com;
+     itemPath = com + appName + '.view.' + view.name + com;
      logHandler.itemLog(itemPath);
      viewsArray.push(itemPath);
      

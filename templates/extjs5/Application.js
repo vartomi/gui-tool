@@ -9,8 +9,8 @@ Ext.Loader.loadScript({
     });
 }});
 //--------------------------------------//
-Ext.define('RapidGui.Application', {
-    name: 'RapidGui',
+Ext.define('{{appName}}.Application', {
+    name: '{{appName}}',
     extend: 'Ext.app.Application',
     requires: [
         {{appRequires}}

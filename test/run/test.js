@@ -22,7 +22,7 @@ describe('gui-tool run (offline|online)', function() {
             this.timeout(200 * ms_per_min);
             fs.mkdir('tmp', function(err) {                
                 if (err) throw err;                
-                exec('node ../bin/gui-tool init --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
+                exec('node ../bin/gui-tool init TmpApp --extjs ../sdk/extjs --siesta ../sdk/siesta', { cwd: 'tmp' }, function(err, stdout, stderr) {
                     if (err) throw err;
         //                if (stderr) throw new Error('' + stderr);   
                      exec('node ../bin/gui-tool generate -f -c', { cwd: 'tmp' }, function(err, stdout, stderr) {

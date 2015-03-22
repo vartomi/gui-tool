@@ -5,6 +5,6 @@ exports.getSpecification = function () {
 
 exports.setSpecification = function (spec) {
     guiSpec = spec;
-}
+};
 
 

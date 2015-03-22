@@ -4,23 +4,25 @@ var generator = require('../../lib/generator'),
     templatePath = path.resolve(__dirname, '../../templates'),
     targetPath = 'webui/app/',
     spec = require('../specification.js'),
-    models,
-    extPath = 'RapidGui.';
+    application = require('../application.js'),
+    models;
 
 exports.create = function (view, viewsAndRequires) {
-   var content = view.content,
-       buttons = view.buttons,
-       dataContent = view.dataContent,
-       configObj = {},
-       itemsArray = [],
-       buttonsArray = [],
-       viewsArray = [],
-       requiresArray = [],
-       itemPath,
-       com = '\'';
+    var appName = application.getAppName(),
+        content = view.content,
+        buttons = view.buttons,
+        dataContent = view.dataContent,
+        configObj = {},
+        itemsArray = [],
+        buttonsArray = [],
+        viewsArray = [],
+        requiresArray = [],
+        itemPath,
+        com = '\'';
     
     models = spec.getSpecification().models;
     try {
+        configObj.appName = appName;
         configObj.definePath = view.name;
         configObj.xtype = view.alias;
         configObj.title = view.layout.title;
@@ -67,7 +69,7 @@ exports.create = function (view, viewsAndRequires) {
             fileName: view.name + '.js'
      });
      
-     itemPath = com + extPath + 'view.' + view.name + com;
+     itemPath = com + appName + '.view.' + view.name + com;
      logHandler.itemLog(itemPath);
      viewsArray.push(itemPath);
      

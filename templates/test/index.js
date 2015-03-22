@@ -1,14 +1,14 @@
 var Harness = Siesta.Harness.Browser.ExtJS
 
 Harness.configure({
-    title: 'RapidGui test suites',
+    title: '{{appName}} test suites',
     autoCheckGlobals: true,
     
-    loaderPath  : { 'RapidGui' : 'app' },
+    loaderPath  : { '{{appName}}' : 'app' },
     
     expectedGlobals: [
         'Ext',
-        'RapidGui'
+        '{{appName}}'
     ],
     
     preload : [

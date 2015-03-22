@@ -1,4 +1,4 @@
-Ext.define('RapidGui.controller.{{definePath}}', {
+Ext.define('{{appName}}.controller.{{definePath}}', {
     extend: 'Ext.app.Controller',
 
     init: function() {

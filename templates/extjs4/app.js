@@ -5,7 +5,7 @@
 */
 
 Ext.application({
-    name: 'RapidGui',
+    name: '{{appName}}',
 
     extend: 'RapidGui.Application',
     

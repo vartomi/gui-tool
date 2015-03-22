@@ -1,4 +1,4 @@
-Ext.define('RapidGui.store.{{definePath}}',{
+Ext.define('{{appName}}.store.{{definePath}}',{
    extend: 'Ext.data.Store',
    model: '{{model}}',  
     {{proxy}}     
