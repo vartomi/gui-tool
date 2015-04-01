@@ -1,8 +1,8 @@
 var app = {};
-exports.getAppName = function () {
+exports.getAppName = function() {
     return app.name;
 };
 
-exports.setAppName = function (name) {
+exports.setAppName = function(name) {
     app.name = name;
 };

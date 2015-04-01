@@ -7,7 +7,7 @@ var generator = require('../../lib/generator'),
     targetPath = 'webui/app/',
     application = require('../application.js');
 
-exports.create = function (view, viewsAndRequires) {
+exports.create = function(view, viewsAndRequires) {
     var appName = application.getAppName(),
         content = view.content,
         configObj = {},
@@ -23,43 +23,40 @@ exports.create = function (view, viewsAndRequires) {
         configObj.height = view.layout.height;
         configObj.width = view.layout.width;
 
-        content.forEach(function (el){
-           if (el.layout.type === 'form') {
-               itemsArray.push('{xtype:' + com + el.alias + com + ',' +
-                               'header: false }');
-      
-               formGenerator.create(el, viewsAndRequires);
-           } else if (el.layout.type === 'grid') {
-               itemsArray.push('{xtype:' + com + el.alias + com + ',' +
-                               'header: false }');
-      
-               gridGenerator.create(el, viewsAndRequires);
-           }
+        content.forEach(function(el) {
+            if (el.layout.type === 'form') {
+                itemsArray.push('{xtype:' + com + el.alias + com + ',' +
+                    'header: false }');
+
+                formGenerator.create(el, viewsAndRequires);
+            } else if (el.layout.type === 'grid') {
+                itemsArray.push('{xtype:' + com + el.alias + com + ',' +
+                    'header: false }');
+
+                gridGenerator.create(el, viewsAndRequires);
+            }
         });
-        
+
         configObj.items = itemsArray.join(',');
 
     } catch (e) {
-        logHandler.error(e);    
+        logHandler.error(e);
     }
     generator.processTemplate(configObj, {
-            sourceBaseDir: templatePath + '/view',
-            targetBaseDir: targetPath + '/view',
-            template: 'WindowTemplate.js',
-            fileName: view.name + '.js'
-     });
-     
-     
-     itemPath = com + appName + '.view.' + view.name + com;
-     logHandler.itemLog(itemPath);
-     viewsArray.push(itemPath);
-     
-     if (!viewsAndRequires.views) {
-         viewsAndRequires.views = '';
-     } else {
-         viewsAndRequires.views += ',\n';
-     }
-     viewsAndRequires.views += viewsArray.join(',\n');     
+        sourceBaseDir: templatePath + '/view',
+        targetBaseDir: targetPath + '/view',
+        template: 'WindowTemplate.js',
+        fileName: view.name + '.js'
+    });
+
+    itemPath = com + appName + '.view.' + view.name + com;
+    logHandler.itemLog(itemPath);
+    viewsArray.push(itemPath);
+
+    if (!viewsAndRequires.views) {
+        viewsAndRequires.views = '';
+    } else {
+        viewsAndRequires.views += ',\n';
+    }
+    viewsAndRequires.views += viewsArray.join(',\n');
 };
-
-

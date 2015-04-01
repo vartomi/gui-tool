@@ -1,6 +1,13 @@
 {
+    "curly": true,
+    "expr": true,
     "node": true,
+    "latedef": true,
     "eqeqeq": true,
+    "noarg": true,
+    "quotmark": "single",
     "multistr": true,
-    "mocha": true
+    "mocha": true,
+    "undef": true,
+    "unused": true
 }
