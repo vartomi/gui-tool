@@ -125,7 +125,7 @@ var addFunction = function(controlName, controlDo, fnParams) {
         if (selector[1]) {
             xtype = selector[1].toLowerCase();
 
-            if (xtype.indexOf('list') > -1) {
+            if (xtype.indexOf('list') > -1 || xtype.indexOf('grid') > -1) {
                 xtype = 'grid';
             } else if (xtype.indexOf('btn') > -1) {
                 xtype = 'button';
@@ -139,7 +139,8 @@ var addFunction = function(controlName, controlDo, fnParams) {
                 xtype = 'textfield';
             } else {
                 throw new Error('Invalid type name in alias \'' + xtype + '\'\n' +
-                    ' it should contain one of the following [list, btn, form, window, chk, checkbox, textfield]');
+                    ' it should contain one of the following ' +
+                    '[list, grid, btn, form, window, chk, checkbox, textfield]');
             }
 
             try {

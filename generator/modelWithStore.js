@@ -50,7 +50,10 @@ var generateMockData = function(fields, number) {
                     templateParam = 'boolean';
                     break;
                 case 'date':
-                    templateParam = 'number 1990 2010}}-{{number 1 12}}-{{number 1 31';
+                    templateParam = 'number 1 12}}/{{number 1 31}}/{{number 1990 2010';
+                    break;
+                case 'id':
+                    templateParam = 'uniqueIndex';
                     break;
                 default:
                     break;
@@ -70,6 +73,7 @@ var generateMockData = function(fields, number) {
 
 exports.createStoresWithModels = function(models) {
     var appName = application.getAppName(),
+        format = '',
         modelName,
         storeName,
         modelPath,
@@ -136,9 +140,18 @@ exports.createStoresWithModels = function(models) {
             if (model.typedFields) {
                 fieldsArray = [];
                 model.typedFields.forEach(function(field) {
+                    if (field.format) {
+                        format = ',' + 'format: ' + com + field.format + com;
+                    } else if (field.type === 'date') {
+                        // throw new Error('Date fields ');
+                    }
+
+                    if (field.type === 'id') {
+                        field.type = 'int';
+                    }
+
                     fieldsArray.push('{name: ' + com + field.name + com + ',' +
-                        'type: ' + com + field.type + com + ',' +
-                        'format: ' + com + field.format + com + '}');
+                        'type: ' + com + field.type + com + format + '}');
                 });
                 fieldsString += ',' + fieldsArray.join(',');
             }

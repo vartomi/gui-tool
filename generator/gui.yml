@@ -5,7 +5,7 @@ extTheme: neptune
 
 layout:
     - "examplegrid|exampleform"
-    - "exampleview"
+    - "examplejoinedgrid|exampleview"
 
 views:
     -
@@ -41,6 +41,14 @@ views:
                 name: Fields
                 layout:
                     type: auto
+    -
+        name: ExampleJoinedGrid
+        alias: examplejoinedgrid
+        layout: 
+            title: Joined grid example
+            type: grid
+        dataContent:
+            model: Address
         
 models:
      -
@@ -51,7 +59,32 @@ models:
             -
                 name: age
                 type: int
-    
+            -
+                name: birth
+                type: date
+            -
+                name: adult
+                type: boolean
+     -
+        name: Address
+        proxy: mock:20
+        fields: [city, street]
+        typedFields:
+            -
+                name: id
+                type: id
+            -
+                name: postalCode
+                type: int
+            -
+                name: houseNumber
+                type: int
+            - 
+                name: floor
+                type: int
+            -
+                name: apartment
+                type: int    
         
 useCases:
     -

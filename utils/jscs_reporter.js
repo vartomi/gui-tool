@@ -32,5 +32,5 @@ module.exports = function(errorsCollection) {
         );
     }
 
-    console.log('\n' + table.toString());
+    console.log('JSCS check\n' + table.toString());
 };

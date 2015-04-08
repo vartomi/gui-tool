@@ -66,7 +66,11 @@ var createViews = function(layout, staticViews) {
 };
 
 exports.processTemplate = function(specPath, appName) {
-    guiSpec = yaml.load(fs.readFileSync(specPath));
+    try {
+        guiSpec = yaml.load(fs.readFileSync(specPath));
+    } catch (err) {
+        logHandler.error(err);
+    }
     specification.setSpecification(guiSpec);
     application.setAppName(appName);
     var staticViews = guiSpec.views,

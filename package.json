@@ -42,6 +42,7 @@
     "open": "0.0.5",
     "path": "0.11.14",
     "properties-reader": "0.0.9",
+    "screenshot-stream": "^1.3.0",
     "should": "4.5.0",
     "socket.io": "^1.3.4",
     "wrench": "1.5.8"

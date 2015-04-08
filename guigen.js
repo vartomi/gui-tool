@@ -9,6 +9,7 @@ var http = require('http'),
     PropReader = require('properties-reader'),
     generator = require('./lib/generator'),
     fs = require('fs'),
+    screenshot = require('screenshot-stream'),
     beautify = require('js-beautify').js_beautify,
     guiGenerator = require('./generator/index.js'),
     testGenerator = require('./generator/test.js'),
@@ -235,7 +236,8 @@ exports.init = function(name, dir, options) {
         extSrc,
         siestaSrc = 'http://www.bryntum.com/download/?product_id=siesta-lite',
         remove = (reset ? true : false),
-        directories = ['test', 'specification', 'webui'],
+        directories = ['test', 'specification', 'webui', 'screenshots',
+                       'screenshots/chrome', 'screenshots/firefox', 'screenshots/iexplorer'],
         success = true,
         extProperties,
         extZipPath, siestaZipPath;
@@ -417,10 +419,15 @@ exports.start = function(options) {
         prod = options.prod,
         watch = options.watch,
         devPath = path.resolve('./webui', ''),
+        verbose = true,
         prodPath;
 
     exitIfNotProjectDir();
     getConfiguration();
+
+    if (options.verbose === false) {
+        verbose = options.verbose;
+    }
 
     prodPath = path.resolve('./webui/build/production/' + configuration.appname, '');
 
@@ -428,7 +435,10 @@ exports.start = function(options) {
         cmd: 'node',
         args: ['server.js', 'development', devPath, 'without-log']
     }, mainDir + '/server', null, true);
-    logHandler.log('development host server starting...');
+
+    if (verbose) {
+        logHandler.log('development host server starting...');
+    }
 
     if (!noBrowser) {
         openBrowser(null, devUrl);
@@ -456,7 +466,49 @@ exports.start = function(options) {
         }
     }
 
-    console.log('\nUse ' + '[CTRL + C]'.bold.yellow + ' to exit...\n');
+    if (verbose) {
+        console.log('\nUse ' + '[CTRL + C]'.bold.yellow + ' to exit...\n');
+    }
+};
+
+exports.createScreenshots = function() {
+    var guitool = this,
+        counter = 0,
+        screenshotsName,
+        stream;
+
+    exitIfNotProjectDir();
+    getConfiguration();
+
+    logHandler.log('server starting...');
+    guitool.start({
+        quiet: true,
+        verbose: false
+    });
+
+    setTimeout(function() {
+        logHandler.log('screenshots creating...');
+        ['iexplorer', 'chrome', 'firefox'].forEach(function(userAgent) {
+            ['1024x768', '1366x768', '1920x1080'].forEach(function(resolution) {
+                counter++;
+                screenshotsName = configuration.appname + '_' + userAgent + '_' + resolution + '.png';
+                stream = screenshot(devUrl, resolution, {
+                    crop: true,
+                    userAgent: userAgent,
+                    delay: 2
+                });
+                stream.pipe(fs.createWriteStream('screenshots/' + userAgent + '/' + screenshotsName));
+                stream.on('finish', function() {
+                    if (counter === 1) {
+                        logHandler.finishLog('screenshots are created');
+                        process.exit(0);
+                    } else {
+                        counter--;
+                    }
+                });
+            });
+        });
+    }, 1000);
 };
 
 exports.runTest = function(options) {

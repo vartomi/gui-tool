@@ -35,6 +35,6 @@ module.exports = {
             );
         }
 
-        console.log('\n' + table.toString());
+        console.log('JSHint check\n' + table.toString());
     }
 };

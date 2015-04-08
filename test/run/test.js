@@ -109,13 +109,15 @@ describe('gui-tool run (offline|online)', function() {
         });
     });
 
-    /*describe('cleanup', function() {
+    describe('cleanup', function() {
         it('should remove tmp directory', function(done) {
             this.timeout(100 * msPerMin);
             exec('rm -rf tmp', function(err) {
-                if (err) throw err;
+                if (err) {
+                    throw err;
+                }
                 done();
             });
         });
-    });*/
+    });
 });
