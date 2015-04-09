@@ -1,4 +1,4 @@
-/*describe('gui-tool init (online)', function() {
+/* describe('gui-tool init (online)', function() {
     describe('beforeScenario', function() {
         it('should create tmp directory', function(done){
             fs.mkdir('tmp', function(err) {
@@ -7,7 +7,7 @@
             });
         });
     });
-    
+
     describe('init project', function() {
         it('should create gui-tool project in tmp directory', function(done){
             this.timeout(240000);
@@ -20,7 +20,7 @@
             });
         });
     });
-    
+
     describe('afterScenario', function() {
         it('should remove tmp directory', function(done){
             this.timeout(240000);

@@ -49,5 +49,3 @@ exports.typeToExtJSEvent = {
         textfield: 'change(me, newValue)'
     }
 };
-
-

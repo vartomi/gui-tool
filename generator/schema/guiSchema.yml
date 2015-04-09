@@ -164,7 +164,7 @@ definitions:
                 type: string
             type:
                 type: string
-                enum: [string, int, float, boolean, date]
+                enum: [id, string, int, float, boolean, date]
             format:
                 type: string
                 enum: [c, "Y-m-d", "F j, Y, g:i a"]

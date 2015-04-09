@@ -1,4 +1,7 @@
-var generator = require('../lib/generator'),
+'use strict';
+
+var dummyjson = require('dummy-json'),
+    generator = require('../lib/generator'),
     path = require('path'),
     logHandler = require('../loghandler.js'),
     templatePath = path.resolve(__dirname, '../templates'),
@@ -11,10 +14,66 @@ var generator = require('../lib/generator'),
             type: \'json\',\
             root: \'result.data\'\
         },\
-    },\n';    
+    },\n';
 
-exports.createStoresWithModels = function (models) {
+var dummyString = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur',
+        'adipisicing', 'elit', 'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut',
+        'labore', 'et', 'dolore', 'magna', 'aliqua.', 'enim', 'ad', 'minim', 'veniam'
+    ],
+    dummyStringLen = dummyString.length;
+
+var dummyHelpers = {
+    dummyString: function() {
+        var index = Math.floor((Math.random() * dummyStringLen) + 1);
+        return dummyString[index - 1];
+    }
+};
+
+var generateMockData = function(fields, number) {
+    var template = '{{#repeat ' + number + '}}{',
+        templateArray = [],
+        result;
+
+    fields.forEach(function(field) {
+        var templateParam = 'dummyString',
+            fieldName = field;
+        if (field.type) {
+            fieldName = field.name;
+            switch (field.type) {
+                case 'int':
+                    templateParam = 'number 100';
+                    break;
+                case 'float':
+                    templateParam = 'number 100.0';
+                    break;
+                case 'boolean':
+                    templateParam = 'boolean';
+                    break;
+                case 'date':
+                    templateParam = 'number 1 12}}/{{number 1 31}}/{{number 1990 2010';
+                    break;
+                case 'id':
+                    templateParam = 'uniqueIndex';
+                    break;
+                default:
+                    break;
+            }
+        }
+        templateArray.push(fieldName + ': \'{{' + templateParam + '}}\'');
+    });
+
+    template += templateArray.join(',') + '}{{/repeat}}';
+
+    result = dummyjson.parse(template, {
+        helpers: dummyHelpers
+    });
+
+    return result;
+};
+
+exports.createStoresWithModels = function(models) {
     var appName = application.getAppName(),
+        format = '',
         modelName,
         storeName,
         modelPath,
@@ -27,27 +86,25 @@ exports.createStoresWithModels = function (models) {
         storesArray = [],
         dataArray,
         proxy;
-    
 
     try {
 
-        models.forEach(function (model) {
+        models.forEach(function(model) {
             modelName = model.name;
             modelPath = appName + '.model.' + modelName;
             storeName = modelName + 's';
             storePath = appName + '.store.' + storeName;
-            
+
             proxy = model.proxy.split(':');
             if (proxy[0] === 'mock') {
-                dataArray = generateMockData(model.fields, proxy[1]);
+                dataArray = generateMockData(model.fields.concat(model.typedFields), proxy[1]);
                 proxy = null;
             } else {
                 proxyTpl = proxyTpl.replace('{{proxyUrl}}', proxy);
             }
 
             // Store generating
-            generator.processTemplate(
-            {
+            generator.processTemplate({
                 appName: appName,
                 definePath: storeName,
                 model: modelPath,
@@ -61,13 +118,13 @@ exports.createStoresWithModels = function (models) {
             });
 
             itemPath = '\'' + storePath + '\'';
-            logHandler.itemLog(itemPath);  
-            storesArray.push(itemPath);       
+            logHandler.itemLog(itemPath);
+            storesArray.push(itemPath);
 
             fieldsArray = model.fields;
 
             if (model.has) {
-                model.has.forEach(function (assoc) {
+                model.has.forEach(function(assoc) {
                     if (assoc.inResource) {
                         // TODO hasmany
                     } else {
@@ -82,16 +139,24 @@ exports.createStoresWithModels = function (models) {
 
             if (model.typedFields) {
                 fieldsArray = [];
-                model.typedFields.forEach(function (field) {
+                model.typedFields.forEach(function(field) {
+                    if (field.format) {
+                        format = ',' + 'format: ' + com + field.format + com;
+                    } else if (field.type === 'date') {
+                        // throw new Error('Date fields ');
+                    }
+
+                    if (field.type === 'id') {
+                        field.type = 'int';
+                    }
+
                     fieldsArray.push('{name: ' + com + field.name + com + ',' +
-                                     'type: ' + com + field.type + com + ',' + 
-                                     'format: ' + com + field.format + com + '}');
+                        'type: ' + com + field.type + com + format + '}');
                 });
                 fieldsString += ',' + fieldsArray.join(',');
             }
 
-            generator.processTemplate(
-            {
+            generator.processTemplate({
                 appName: appName,
                 definePath: modelName,
                 fields: fieldsString
@@ -103,42 +168,15 @@ exports.createStoresWithModels = function (models) {
             });
 
             itemPath = '\'' + modelPath + '\'';
-            logHandler.itemLog(itemPath);        
+            logHandler.itemLog(itemPath);
             modelsArray.push(itemPath);
         });
-    } catch (e) {        
-        logHandler.error(e);    
+    } catch (e) {
+        logHandler.error(e);
     }
-    
+
     return {
         models: modelsArray.join(',\n'),
         stores: storesArray.join(',\n'),
     };
 };
-
-var loremIpsumArray =["lorem","ipsum","dolor","sit","amet,","consectetur","adipisicing","elit,","sed","do","eiusmod","tempor","incididunt","ut","labore","et","dolore","magna","aliqua.","enim","ad","minim","veniam,","quis","nostrud","exercitation","ullamco","laboris","nisi","ut","aliquip","ex","ea","commodo","consequat.","duis","aute","irure","dolor","in","reprehenderit","in","voluptate","velit","esse","cillum","dolore","eu","fugiat","nulla","pariatur.","excepteur","sint","occaecat","cupidatat","non","proident,","sunt","in","culpa","qui","officia","deserunt","mollit","anim","id","est","laborum.","sed","ut","perspiciatis,","unde","omnis","iste","natus","error","sit","voluptatem","accusantium","doloremque","laudantium,","totam","rem","aperiam","eaque","ipsa,","quae","ab","illo","inventore","veritatis","et","quasi","architecto","beatae","vitae","dicta","sunt,","explicabo.","nemo","enim","ipsam","voluptatem,","quia","voluptas","sit,","aspernatur","aut","odit","aut","fugit,","sed","quia","consequuntur","magni","dolores","eos,","qui","ratione","voluptatem","sequi","nesciunt,","neque","porro","quisquam","est,","qui","dolorem","ipsum,","quia","dolor","sit,","amet,","consectetur,","adipisci","velit,","sed","quia","non","numquam","eius","modi","tempora","incidunt,","ut","labore","et","dolore","magnam","aliquam","quaerat","voluptatem.","ut","enim","ad","minima","veniam,","quis","nostrum","exercitationem","ullam","corporis","suscipit","laboriosam,","nisi","ut","aliquid","ex","ea","commodi","consequatur?","quis","autem","vel","eum","iure","reprehenderit,","qui","in","ea","voluptate","velit","esse,","quam","nihil","molestiae","consequatur,","vel","illum,","qui","dolorem","eum","fugiat,","quo","voluptas","nulla","pariatur?","at","vero","eos","et","accusamus","et","iusto","odio","dignissimos","ducimus,","qui","blanditiis","praesentium","voluptatum","deleniti","atque","corrupti,","quos","dolores","et","quas","molestias","excepturi","sint,","obcaecati","cupiditate","non","provident,","similique","sunt","in","culpa,","qui","officia","deserunt","mollitia","animi,","id","est","laborum","et","dolorum","fuga.","harum","quidem","rerum","facilis","est","et","expedita","distinctio.","Nam","libero","tempore,","cum","soluta","nobis","est","eligendi","optio,","cumque","nihil","impedit,","quo","minus","id,","quod","maxime","placeat,","facere","possimus,","omnis","voluptas","assumenda","est,","omnis","dolor","repellendus.","temporibus","autem","quibusdam","aut","officiis","debitis","aut","rerum","necessitatibus","saepe","eveniet,","ut","et","voluptates","repudiandae","sint","molestiae","non","recusandae.","itaque","earum","rerum","hic","tenetur","a","sapiente","delectus,","aut","reiciendis","voluptatibus","maiores","alias","consequatur","aut","perferendis","doloribus","asperiores","repellat"];
-var loremIpsumArrayLength = loremIpsumArray.length;
-
-var generateMockDataArrayPush = function (field) {
-    var wordIndex = Math.floor((Math.random() * loremIpsumArrayLength) + 1);
-    this.push(field + ': ' + '\'' + loremIpsumArray[wordIndex - 1] + '\'');
-};
-
-var generateMockData = function (fields, number) {
-    var fieldsArray = [],
-        dataArray = [],
-        fieldsString,
-        i;
-    
-    for (i = number; i > 0; i--) {
-        fieldsString = '{';
-        fields.forEach(generateMockDataArrayPush.bind(fieldsArray));
-        fieldsString += fieldsArray.join(',') + '}';
-        dataArray.push(fieldsString);
-        fieldsArray = [];
-    }
-    
-    return dataArray.join(',');
-};
-
-

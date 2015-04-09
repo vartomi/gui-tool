@@ -58,12 +58,20 @@
     });
     
     program
-        .command('test')
-        .description('Open the test page (or open test report after test was running)')        
+        .command('test <command>')
+        .description('Test prototype application with sub commands:\n\n\t\
+            run [options]\tOpen the test page (or open test report after test was running)\n\t\
+            screen\t\tCreate screenshots about the application in Chrome, Internet Explorer, Firefox with the following resolutions: 1024x768, 1366x768, 1920x1080')        
         .option('-r, --run', 'Run the tests in console with phantomJS (Siesta integration is required!)')
-        .action(function(options){
+        .action(function(command, options){
             programHeader();
-            require('../guigen.js').runTest(options);
+            if (command === 'run') {
+                require('../guigen.js').runTest(options);
+            } else if (command === 'screen') {
+                require('../guigen.js').createScreenshots();
+            } else {
+                logHandler.err('invalid command: ' + command);
+            }
     });
     
     program

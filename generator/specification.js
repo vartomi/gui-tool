@@ -1,10 +1,8 @@
 var guiSpec = {};
-exports.getSpecification = function () {
+exports.getSpecification = function() {
     return guiSpec;
 };
 
-exports.setSpecification = function (spec) {
+exports.setSpecification = function(spec) {
     guiSpec = spec;
 };
-
-
