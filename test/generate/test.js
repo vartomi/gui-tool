@@ -101,7 +101,7 @@ describe('gui-tool generate (offline|online)', function() {
             var stream = fs.createReadStream('tmp/specification/gui.yml')
                 .pipe(fs.createWriteStream('tmp/specification/gui_copy.yml'));
             stream.on('finish', function() {
-                done(); 
+                done();
             });
         });
 
