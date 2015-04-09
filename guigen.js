@@ -237,7 +237,8 @@ exports.init = function(name, dir, options) {
         siestaSrc = 'http://www.bryntum.com/download/?product_id=siesta-lite',
         remove = (reset ? true : false),
         directories = ['test', 'specification', 'webui', 'screenshots',
-                       'screenshots/chrome', 'screenshots/firefox', 'screenshots/iexplorer'],
+            'screenshots/chrome', 'screenshots/firefox', 'screenshots/iexplorer'
+        ],
         success = true,
         extProperties,
         extZipPath, siestaZipPath;
@@ -458,7 +459,7 @@ exports.start = function(options) {
     if (prod) {
         execute({
             cmd: 'node',
-            args: ['server.js', 'production', prodPath, 'without-log']
+            args: ['server.js', 'production', prodPath, 'without-log', watch ? 'watch' : '']
         }, mainDir + '/server', null, true);
         logHandler.log('production host server starting...');
         if (!noBrowser) {
@@ -474,7 +475,9 @@ exports.start = function(options) {
 exports.createScreenshots = function() {
     var guitool = this,
         counter = 0,
+        delay = 2,
         screenshotsName,
+        width,
         stream;
 
     exitIfNotProjectDir();
@@ -489,9 +492,15 @@ exports.createScreenshots = function() {
     setTimeout(function() {
         logHandler.log('screenshots creating...');
         ['iexplorer', 'chrome', 'firefox'].forEach(function(userAgent) {
-            ['1024x768', '1366x768', '1920x1080'].forEach(function(resolution) {
+            ['1024x768', '1366x768', '1920x1080', '2880x1800', '3840x2160'].forEach(function(resolution) {
                 counter++;
                 screenshotsName = configuration.appname + '_' + userAgent + '_' + resolution + '.png';
+                width = resolution.split('x')[0];
+
+                if (width > 1920) {
+                    delay = 3;
+                }
+
                 stream = screenshot(devUrl, resolution, {
                     crop: true,
                     userAgent: userAgent,

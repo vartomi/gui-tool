@@ -52,18 +52,24 @@ describe('gui-tool test (offline|online)', function() {
             fs.existsSync('tmp/screenshots/chrome/TmpApp_chrome_1024x768.png').should.equal(true);
             fs.existsSync('tmp/screenshots/chrome/TmpApp_chrome_1366x768.png').should.equal(true);
             fs.existsSync('tmp/screenshots/chrome/TmpApp_chrome_1920x1080.png').should.equal(true);
+            fs.existsSync('tmp/screenshots/chrome/TmpApp_chrome_2880x1800.png').should.equal(true);
+            fs.existsSync('tmp/screenshots/chrome/TmpApp_chrome_3840x2160.png').should.equal(true);
         });
 
         it('should find screenshots created in firefox', function() {
             fs.existsSync('tmp/screenshots/firefox/TmpApp_firefox_1024x768.png').should.equal(true);
             fs.existsSync('tmp/screenshots/firefox/TmpApp_firefox_1366x768.png').should.equal(true);
             fs.existsSync('tmp/screenshots/firefox/TmpApp_firefox_1920x1080.png').should.equal(true);
+            fs.existsSync('tmp/screenshots/firefox/TmpApp_firefox_2880x1800.png').should.equal(true);
+            fs.existsSync('tmp/screenshots/firefox/TmpApp_firefox_3840x2160.png').should.equal(true);
         });
 
         it('should find screenshots created in iexplorer', function() {
             fs.existsSync('tmp/screenshots/iexplorer/TmpApp_iexplorer_1024x768.png').should.equal(true);
             fs.existsSync('tmp/screenshots/iexplorer/TmpApp_iexplorer_1366x768.png').should.equal(true);
             fs.existsSync('tmp/screenshots/iexplorer/TmpApp_iexplorer_1920x1080.png').should.equal(true);
+            fs.existsSync('tmp/screenshots/iexplorer/TmpApp_iexplorer_2880x1800.png').should.equal(true);
+            fs.existsSync('tmp/screenshots/iexplorer/TmpApp_iexplorer_3840x2160.png').should.equal(true);
         });
     });
 

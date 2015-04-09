@@ -8,7 +8,7 @@
 [![](https://img.shields.io/npm/dm/gui-tool.svg)](https://www.npmjs.com/package/gui-tool)
 
 ####Create ExtJS prototype applications easier and faster.
-#####[ Interactive prototype | Prepared Siesta tests | Screenshots in Full HD ]
+#####[ Interactive prototype | Prepared Siesta tests | Screenshots (Full HD, UHD 4K) ]
 
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
   > Supported ExtJS versions:
@@ -80,9 +80,15 @@ Before you start it, please check the [requirements](#requirements)!
    
  6. Every application should be tested, therefore gui-tool prepares the environment to test the newly generated ExtJS application with Siesta. The skeleton for the ExtJS components' test is generated with the `generate` command also, we just need to open the test page to check them:
 
-    `$ gui-tool test`
+    `$ gui-tool test run`
     
     > With option `-r` or `--run`, the tests can be run in console mode and afterthat a report file will be generated with test results. **Bryntum Siesta Standard required!**
+    
+    If we need some screenshots about the prototype application, how is it look like in browsers, then we can create screenshots in Chrome, Firefox, Internet Explorer:
+    
+    `$ gui-tool test screen`
+    
+    > The screenshots will be created in 1024x768, 1366x768, 1920x1080 (Full HD), 2880x1800 (MacBook Retina), 3840x2160 (UHD 4K), and placed in `<project_name>/screenshots` folder
    
 <a name="specification"></a>
 ##**How to specify?**

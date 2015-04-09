@@ -9,7 +9,8 @@ require('colors');
 var config = {},
     documentRoot = {};
 
-var withoutLog = false;
+var withoutLog = false,
+    watch = false;
 exports.config = config;
 if (process.argv.length >= 3) {
     var baseConfig = require('./config.js');
@@ -21,8 +22,12 @@ if (process.argv.length >= 3) {
 
 console.log('document root: %s', documentRoot);
 
-if (process.argv.indexOf('without-log')) {
+if (process.argv.indexOf('without-log') > -1) {
     withoutLog = true;
+}
+
+if (process.argv.indexOf('watch') > -1) {
+    watch = true;
 }
 
 var server = module.exports = express();
@@ -63,13 +68,18 @@ function accessLogger(req, res, next) {
     next();
 }
 
-var io = require('socket.io').listen(server.listen(config.port));
+// Watch
+if (watch) {
+    var io = require('socket.io').listen(server.listen(config.port));
 
-io.on('connection', function() {
-    fs.watchFile(documentRoot + '/app/Application.js', function(curr) {
-        io.emit('app change', curr);
+    io.on('connection', function() {
+        fs.watchFile(documentRoot + '/app/Application.js', function(curr) {
+            io.emit('app change', curr);
+        });
     });
-});
+} else {
+    server.listen(config.port);
+}
 // Routes
 server.all('*', accessLogger, restrict);
 

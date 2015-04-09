@@ -7,13 +7,17 @@
 
 Create ExtJS prototype applications easier and faster.
 -
+[ Interactive prototype | Prepared Siesta tests | Screenshots (Full HD, UHD 4K) ]
+-
 
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
   > Supported ExtJS versions:
  - <b>4.x</b> (built in 4.2.1)
  - <b>5.x</b> (built in 5.1.0)
 
-<h4>Detailed documentation in</h4> [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
+<h4>Detailed documentation in [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)</h4>
+
+[ [User manual](https://github.com/vartomi/gui-tool/wiki/User-manual) | [Specification schema](https://github.com/vartomi/gui-tool/wiki/Specification-schema)]
 
 Getting Started
 --
@@ -70,9 +74,15 @@ Before you start it, please check the [requirements](#requirements) below!
    
 6. Every application should be tested, therefore gui-tool prepares the environment to test the newly generated ExtJS application with Siesta. The skeleton for the ExtJS components' test is generated with the `generate` command also, we just need to open the test page to check them:
 
-    `$ gui-tool test`
+    `$ gui-tool test run`
     
     > With option `-r` or `--run`, the tests can be run in console mode and afterthat a report file will be generated with test results. **Bryntum Siesta Standard required!**
+    
+    If we need some screenshots about the prototype application, how is it look like in browsers, then we can create screenshots in Chrome, Firefox, Internet Explorer:
+    
+    `$ gui-tool test screen`
+    
+    > The screenshots will be created in 1024x768, 1366x768, 1920x1080 (Full HD), 2880x1800 (MacBook Retina), 3840x2160 (UHD 4K), and placed in `<project_name>/screenshots` folder
    
 <a name="requirements"></a>
 
