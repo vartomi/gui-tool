@@ -97,9 +97,12 @@ describe('gui-tool generate (offline|online)', function() {
 
     describe('generate with gui_copy.yml specification file', function() {
         this.timeout(20 * msPerMin);
-        before(function() {
-            fs.createReadStream('tmp/specification/gui.yml')
+        before(function(done) {
+            var stream = fs.createReadStream('tmp/specification/gui.yml')
                 .pipe(fs.createWriteStream('tmp/specification/gui_copy.yml'));
+            stream.on('finish', function() {
+                done(); 
+            });
         });
 
         it('should found gui_copy.yml in specification folder', function() {
