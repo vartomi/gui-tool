@@ -8,6 +8,7 @@
 [![](https://img.shields.io/npm/dm/gui-tool.svg)](https://www.npmjs.com/package/gui-tool)
 
 ####Create ExtJS prototype applications easier and faster.
+#####[ Interactive prototype | Prepared Siesta tests | Screenshots in Full HD ]
 
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
   > Supported ExtJS versions:
@@ -21,6 +22,7 @@ Do you need a skeleton application or a prototype written in ExtJS? Just create 
 [Requirements](#requirements)
 
 ####Detailed documentation in [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
+[ [User manual](https://github.com/vartomi/gui-tool/wiki/User-manual) | [Specification schema](https://github.com/vartomi/gui-tool/wiki/Specification-schema)]
 
 ##**Getting Started**
 
