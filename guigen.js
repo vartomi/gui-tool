@@ -118,6 +118,21 @@ var openBrowser = function(browser, url) {
     open(url, browsers[browser]);
 };
 
+var formatReport = function(reportFile) {
+    fs.readFile(reportFile, 'utf8', function(err, data) {
+        if (err) {
+            throw err;
+        }
+        fs.writeFile(reportFile, beautify(data), function(err) {
+            if (err) {
+                throw err;
+            }
+            logHandler.finishLog('The test report is generated: ' + reportFile);
+            openBrowser(null, reportFile);
+        });
+    });
+};
+
 // Phantom js
 var consoleTest = function() {
     var platform = process.platform,
@@ -132,38 +147,10 @@ var consoleTest = function() {
     if (isWin) {
         logHandler.log('Run console test in Windows cmd...');
         open('/k cd test/siesta/bin && phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile +
-            ' && exit ', 'cmd',
-            function() {
-                fs.readFile(reportFile, 'utf8', function(err, data) {
-                    if (err) {
-                        throw err;
-                    }
-                    fs.writeFile(reportFile, beautify(data), function(err) {
-                        if (err) {
-                            throw err;
-                        }
-                        logHandler.finishLog('The test report is generated: ' + reportFile);
-                        openBrowser(null, reportFile);
-                    });
-                });
-            });
+            ' && exit ', 'cmd', formatReport.bind(this, reportFile));
     } else if (isLinux) {
         execute('phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile, 'test/siesta/bin',
-            null, null,
-            function() {
-                fs.readFile(reportFile, 'utf8', function(err, data) {
-                    if (err) {
-                        throw err;
-                    }
-                    fs.writeFile(reportFile, beautify(data), function(err) {
-                        if (err) {
-                            throw err;
-                        }
-                        logHandler.finishLog('The test report is generated: ' + reportFile);
-                        openBrowser(null, reportFile);
-                    });
-                });
-            });
+            null, null, formatReport.bind(this, reportFile));
     } else {
         logHandler.log('Run console test...');
         logHandler.warn('OS might be not supported!');
