@@ -4,7 +4,7 @@ require('child_process');
 var http = require('http'),
     exec = require('child_process').exec,
     spawn = require('child_process').spawn,
-    open = require('open'),
+    openIt = require('open'),
     Decompress = require('decompress'),
     PropReader = require('properties-reader'),
     generator = require('./lib/generator'),
@@ -115,7 +115,7 @@ var exitIfHasNotPhantomJS = function() {
 var openBrowser = function(browser, url) {
     var selectedBrowser = browsers[browser] || 'default browser';
     logHandler.log('open ' + selectedBrowser + ' ...');
-    open(url, browsers[browser]);
+    openIt(url, browsers[browser]);
 };
 
 var formatReport = function(reportFile) {
@@ -146,7 +146,7 @@ var consoleTest = function() {
 
     if (isWin) {
         logHandler.log('Run console test in Windows cmd...');
-        open('/k cd test/siesta/bin && phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile +
+        openIt('/k cd test/siesta/bin && phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile +
             ' && exit ', 'cmd', formatReport.bind(this, reportFile));
     } else if (isLinux) {
         execute('phantomjs ' + testUrl + ' --report-format JSON --report-file ' + reportFile, 'test/siesta/bin',
