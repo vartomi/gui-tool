@@ -7,8 +7,8 @@
 
 [![](https://img.shields.io/npm/dm/gui-tool.svg)](https://www.npmjs.com/package/gui-tool)
 
-####Create ExtJS prototype applications easier and faster.
-#####[ Interactive prototype | Prepared Siesta tests | Screenshots (Full HD, UHD 4K) ]
+#### Create ExtJS prototype applications easier and faster.
+##### [ Interactive prototype | Prepared Siesta tests | Screenshots (Full HD, UHD 4K) ]
 
 Do you need a skeleton application or a prototype written in ExtJS? Just create it with easily understandable specification.
   > Supported ExtJS versions:
@@ -21,10 +21,10 @@ Do you need a skeleton application or a prototype written in ExtJS? Just create 
 [Testing](#testing)<br/>
 [Requirements](#requirements)
 
-####Detailed documentation in [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
+#### Detailed documentation in [gui-tool wiki](https://github.com/vartomi/gui-tool/wiki)
 [ [User manual](https://github.com/vartomi/gui-tool/wiki/User-manual) | [Specification schema](https://github.com/vartomi/gui-tool/wiki/Specification-schema)]
 
-##**Getting Started**
+## **Getting Started**
 
 Before you start it, please check the [requirements](#requirements)!
 
@@ -67,7 +67,8 @@ Before you start it, please check the [requirements](#requirements)!
      |- gui # new folder
      |- siesta
      |- index.html # new file
-  ```
+    ```
+    
  5. Finally you can open the generated ExtJS application just run the following command:
  
     `$ gui-tool run -w`
@@ -91,30 +92,30 @@ Before you start it, please check the [requirements](#requirements)!
     > The screenshots will be created in 1024x768, 1366x768, 1920x1080 (Full HD), 2880x1800 (MacBook Retina), 3840x2160 (UHD 4K), and placed in `<project_name>/screenshots` folder
    
 <a name="specification"></a>
-##**How to specify?**
+## **How to specify?**
 Gui-tool use an own specifcation schema to describe how the application should look like and what kind of models it has. In `specification` directory the `gui.yml` file is an example specification file. It's used by the application without given other specification file.
 
 Details about the specification schema can be found in [gui-tool Wiki](https://github.com/vartomi/gui-tool/wiki/Specification-schema)
 
 <a name="development"></a>
-##**Development**
+## **Development**
 If you need to improve or develop specific functionalitites, UI elements for the generated ExtJS application, you can extend the auto-generated code. It's already a well-formatted and readable source under `webui/app` directory.
 
 See [more](http://docs.sencha.com/extjs/4.2.1/) in ExtJS API document
 
 <a name="testing"></a>
-##**Testing**
+## **Testing**
 
 Front-end applicaions can not exist without tests. They ensure that the application is working well in most cases. Gui-tool use Bryntum Siesta testing framework, because it's designed and based on ExtJS. With help of it the testing of ExtJS UI elements is very easy.
 
 See [more](http://www.bryntum.com/docs/siesta/#!/api) in Siesta API document
 
 <a name="requirements"></a>
-##**Requirements**
+## **Requirements**
 
  - unix based commandline tool, e.g. on Windows a [Git Bash](http://git-scm.com/downloads)
  - [node.js with npm](http://nodejs.org/download/) (**> v0.10.28**)
  - [Sencha Cmd](http://www.sencha.com/products/sencha-cmd/download) (**> v5.1.0.26**)
 
-##**License**
+## **License**
 [![](https://img.shields.io/npm/l/gui-tool.svg)](http://opensource.org/licenses/MIT)
